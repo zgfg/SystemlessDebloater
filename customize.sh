@@ -1,3 +1,5 @@
+#!/system/bin/sh
+
 # Installation script customize.sh for Magisk Module Systemless Debloater (REPLACE).
 # XDA thread: https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083
 # Module debloates /system, /vendor and /product apps by searching (at the time of module installation) and listing their paths to the Magisk Module Installer REPLACE variable. 
@@ -16,7 +18,7 @@ MyFolder=/storage/emulated/0/Download
 # MyFolder=/sdcard/Download
 
 # Module's version
-MyVersion=v1.3.4
+MyVersion=v1.3.5
 
 # Log file
 LogFile=$MyFolder/SystemlessDebloater.log
@@ -25,6 +27,20 @@ echo $LogLine
 echo "$LogLine log file." > $LogFile
 echo ${0} >> $LogFile
 echo $(date +%c) >> $LogFile
+Prop=$(getprop ro.build.version.release)
+LogLine='Android '$Prop
+Prop=$(getprop ro.build.system_root_image)
+if [ ! -z "$Prop" ] && [ "$Prop" ]
+then
+	LogLine=$LogLine' SAR'
+fi
+Prop=$(getprop ro.build.ab_update)
+if [ ! -z "$Prop" ] && [ "$Prop" ]
+then
+	LogLine=$LogLine' A/B'
+fi
+echo $LogLine >> $LogFile
+echo $LogLine
 
 # Default/empty list of app names for debloating 
 DebloatList=""
@@ -105,7 +121,7 @@ do
 			# Remove /filename from the end
 			FolderPath=$(echo $FilePath | sed "s,/$FileName$,,g")
 			# Prepend /system if not beginning with
-			if [ -z $(echo "$FolderPath" | grep "^/system") ]
+			if [ -z $(echo $FolderPath | grep "^/system") ]
 			then
 				FolderPath=/system$FolderPath
 			fi
