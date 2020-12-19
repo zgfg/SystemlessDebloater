@@ -1,12 +1,12 @@
 {
   "app": {
-    "version": "7ff22c68",
+    "version": "7ff22c68-alpha",
     "versionCode": "301",
     "link": "https://github.com/vvb2060/magisk_files/raw/alpha/app-debug.apk",
     "note": "https://raw.githubusercontent.com/topjohnwu/magisk_files/canary/notes.md"
   },
   "magisk": {
-    "version": "7ff22c68",
+    "version": "7ff22c68-alpha",
     "versionCode": "21101",
     "link": "https://github.com/vvb2060/magisk_files/raw/alpha/magisk-debug.zip",
     "note": "https://raw.githubusercontent.com/topjohnwu/magisk_files/canary/notes.md",
