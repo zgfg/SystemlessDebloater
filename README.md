@@ -1,5 +1,5 @@
 # Systemless Debloater (REPLACE)
-### Copyright (c) zgfg @ xda, 2020
+### Copyright (c) zgfg @ xda, 2020-2021
 
 ### Links [Support]
 (https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083)
