@@ -19,7 +19,7 @@ MyFolder=/storage/emulated/0/Download
 # MyFolder=/sdcard/Download
 
 # Module's version
-MyVersion=v1.4.0
+MyVersion=v1.4.1
 
 # Log file
 LogFile=$MyFolder/SystemlessDebloater.log
@@ -90,10 +90,10 @@ else
 	echo '# MiBrowserGlobalVendor MiCreditInStub MiDrop ' >> $DebloatListFile
 	echo '# MiLinkService2 MiPicks MiPlayClient MiRcs MiRecycle ' >> $DebloatListFile
 	echo '# MiService MiuiBrowserGlobal MiuiBugReport MiuiDaemon ' >> $DebloatListFile
-	echo '# mi_connect_service MSA-Global Netflix_activation ' >> $DebloatListFile
-	echo '# PartnerBookmarksProvider PaymentService PhotoTable ' >> $DebloatListFile
-	echo '# SoterService Stk TouchAssistant Traceur Turbo ' >> $DebloatListFile
-	echo '# uceShimService Velvet VsimCore wps_lite YellowPage Zman"' >> $DebloatListFile
+	echo '# MSA-Global Netflix_activation PartnerBookmarksProvider ' >> $DebloatListFile
+	echo '# PaymentService PhotoTable Stk TouchAssistant Traceur ' >> $DebloatListFile
+	echo '# Turbo uceShimService Velvet VsimCore wps_lite YellowPage ' >> $DebloatListFile
+	echo '# Zman"' >> $DebloatListFile
 fi
 
 # Log input DebloatList 
