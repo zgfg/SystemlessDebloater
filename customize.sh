@@ -19,17 +19,18 @@ MyFolder=/storage/emulated/0/Download
 # MyFolder=/sdcard/Download
 
 # Module's version
-MyVersion=v1.4.2
+MyVersion=v1.4.3
 
 # Log file
 LogFile=$MyFolder/SystemlessDebloater.log
 LogLine="Magisk Module Systemless Debloater (REPLACE) $MyVersion"
-echo "$LogLine"
+#echo "$LogLine"
 echo "$LogLine log file." > $LogFile
 LogLine='Copyright (c) zgfg @ xda, 2020-2021' 
-echo "$LogLine"
+#echo "$LogLine"
 echo "$LogLine" >> $LogFile
 echo '' >> $LogFile
+
 # Log date and system info
 echo "$(date +%c)" >> $LogFile
 Prop=$(getprop ro.build.version.release)
@@ -46,13 +47,22 @@ then
 fi
 echo "$LogLine"
 echo "$LogLine" >> $LogFile
+LogLine=$(magisk -c)
+echo "$LogLine"
+echo "$LogLine" >> $LogFile
 echo '' >> $LogFile
 
 # Default/empty list of app names for debloating and debloated app names 
 DebloatList=""
 DebloatedList=""
 
-#Simple example for DebloatList var for the input file SystemlessDebloaterList.sh:
+# Verbose logging 
+VerboseLog=""
+
+# Searching for possible several instances of system apps for debloating  
+MultiDebloat="true"
+
+# Simple example for DebloatList var for the input file SystemlessDebloaterList.sh:
 #DebloatList="EasterEgg CatchLog Traceur wps_lite"
 
 # Input file with a list of app names for debloating
@@ -100,7 +110,17 @@ fi
 echo 'Input-DebloatList="'"$DebloatList"'"' >> $LogFile
 echo '' >> $LogFile
 
-# List installed packages
+if [ ! -z "$VerboseLog" ]
+then
+	echo "Verbose logging: $VerboseLog" >> $LogFile
+	echo "Multiple search/debloat: $MultiDebloat" >> $LogFile
+	echo '' >> $LogFile
+fi
+
+# SAR mount-points
+SarMountPointList="/product /vendor /system_ext /india"
+
+# List system packages
 Packages=$(pm list packages -f | sed 's!^package:!!g')
 PackageInfoList=""
 for PackageInfo in $Packages
@@ -109,78 +129,130 @@ do
 	if [ ! -z $(echo "$PackageInfo" | grep '^/data') ]
 	then
 		continue
-	fi				
+	fi
+
+	# Include applications from SAR mount points
+	for SarMountPoint in "/system $SarMountPointList"
+	do		
+		if [ -z $(echo "$PackageInfo" | grep '^$SarMountPoint') ]
+		then
+			PrepPackageInfo=$PackageInfo
+			# Prepend /system to package path if not beginning with
+			if [ -z $(echo "$PrepPackageInfo" | grep '^/system/') ]
+			then
+				PrepPackageInfo=/system$PrepPackageInfo
+			fi				
 			
-	# Prepend /system to package path if not beginning with
-	if [ -z $(echo "$PackageInfo" | grep '^/system/') ]
-	then
-		PackageInfo=/system$PackageInfo
-	fi				
+			# Append to the PackageInfoList
+			PackageInfoList="$PackageInfoList$PrepPackageInfo"$'\n'
 			
-	# Append to the PackageInfoList
-	PackageInfoList="$PackageInfoList$PackageInfo"$'\n'
+			break
+		fi
+	done
 done
 
-# SAR mount-points
-MountPointList="/product /system_ext /vendor /india"
+# Sort PackageInfoList
+PackageInfoList=$(echo "$PackageInfoList" | sort -fu )
 
-# Iterate through the app names for debloating
+
+#Search for mounted system apps
+AppList=""
+for SarMountPoint in $SarMountPointList 
+do
+	AppList="$AppList "$(find "$SarMountPoint" -type f -name "*.apk" 2> /dev/null)
+done
+
+#List system apps
+SystemAppList=""
+for FilePath in $AppList
+do
+	AppPath=$FilePath
+
+	# Prepend /system if file path not beginning with
+	if [ -z $(echo "$AppPath" | grep '^/system/') ]
+	then
+		AppPath=/system$AppPath
+	fi
+
+	# Append to the SystemAppList
+	SystemAppList="$SystemAppList $AppPath"$'\n'
+done
+SystemAppList="$SystemAppList "$(find /system -type f -name "*.apk" 2> /dev/null)
+
+# Sort and log SystemAppList
+SystemAppList=$(echo "$SystemAppList" | sort -fu )
+#echo "System apps: $SystemAppList" >> $LogFile
+#echo '' >> $LogFile
+
+
+#Search for mounted and previously debloated system apps
+AppList=""
+for SarMountPoint in $SarMountPointList 
+do
+	AppList="$AppList "$(find "$SarMountPoint" -type f -name ".replace" 2> /dev/null)
+done
+
+#List previously debloated system apps
+ReplacedAppList=""
+for FilePath in $AppList
+do
+	AppPath=$FilePath
+
+	# Prepend /system if file path not beginning with
+	if [ -z $(echo "$AppPath" | grep '^/system/') ]
+	then
+		AppPath=/system$AppPath
+	fi
+
+	# Append to the ReplacedAppList
+	ReplacedAppList="$ReplacedAppList $AppPath"$'\n'
+done
+ReplacedAppList="$ReplacedAppList "$(find /system -type f -name ".replace" 2> /dev/null)
+
+# Sort and log ReplacedAppList
+ReplacedAppList=$(echo "$ReplacedAppList" | sort -fu )
+
+if [ ! -z "$VerboseLog" ]
+then
+	echo "Previously debloated system apps:"$'\n'"$ReplacedAppList" >> $LogFile
+	echo '' >> $LogFile
+fi
+
+
+# Sort DebloatList
+DebloatList=$(echo "$DebloatList" | sort -fu )
+
+# Iterate through apps for debloating
 echo 'Debloating:' >> $LogFile
 for AppName in $DebloatList
 do
-	FilePath=""
-	FolderPath=""
-	
-	# Search for the system application path
-	# Look for the apk name if the app was not debloated yet, or dummy .replace file if already debloated
-	SubPathList="*app/*/$AppName.apk *app/$AppName/.replace"
-	for SubPath in $SubPathList 
+	AppFound=""
+
+	#Search through previously debloated system apps	
+	SearchName=/"$AppName"/.replace
+	SearchList=$(echo "$ReplacedAppList" | grep "$SearchName$")
+	for FilePath in $SearchList
 	do
-		if [ -z "$FilePath" ]
+		# Break if app already found
+		if [ -z "$MultiDebloat" ]
 		then
-			FilePath=$(readlink -f /system/$SubPath)
-			if [ -z "$FilePath" ]
+			if [ ! -z "$AppFound" ] 
 			then
-				FilePath=$(readlink -f /system/*/$SubPath)
-				for MountPoint in $MountPointList 
-				do
-					if [ ! -z "$FilePath" ]
-					then
-						break					
-					fi
-					FilePath=$(readlink -f $MountPoint/$SubPath)					
-				done
+				break					
 			fi
 		fi
-
-		# Check if the path was found
-		if [ -z "$FolderPath" ] && [ ! -z "$FilePath" ]
+	
+		# Remove /filename from the end of the path
+		FileName=${FilePath##*/}
+		FolderPath=$(echo "$FilePath" | sed "s,/$FileName$,,")
+					
+		if [ ! -z "FolderPath" ]
 		then
+			AppFound="true"
 
-			# Prepend /system if file path not beginning with
-			if [ -z $(echo "$FilePath" | grep '^/system/') ]
-			then
-				FilePath=/system$FilePath
-			fi
-			
-			# Find the corresponding package
-			PackageInfo=$(echo "$PackageInfoList" | grep "$FilePath")
-			PackageName=""
-
-			# Extract package name
-			if [ ! -z "$PackageInfo" ]
-			then
-				PackageName=$(echo "$PackageInfo" | sed "s!^$FilePath=!!")
-				PackageName="($PackageName) "
-			fi
-
-			# Remove /filename from the end of the path
-			FileName=${FilePath##*/}
-			FolderPath=$(echo "$FilePath" | sed "s,/$FileName$,,")
-			
-			# Log the path and package name
-			echo "$FolderPath $PackageName" >> $LogFile
-			
+			# Log the full path
+			echo "found: $FilePath" >> $LogFile
+				
 			# Append to REPLACE var
 			REPLACE="$REPLACE$FolderPath"$'\n'
 			
@@ -189,7 +261,50 @@ do
 		fi
 	done
 
-	if [ -z "$FilePath" ]
+	#Search through system apps	
+	SearchName=/"$AppName".apk
+	SearchList=$(echo "$SystemAppList" | grep "$SearchName$")
+	for FilePath in $SearchList
+	do
+		if [ -z "$MultiDebloat" ]
+		then
+			if [ ! -z "$AppFound" ] 
+			then
+				break					
+			fi
+		fi
+
+		# Find the corresponding package
+		PackageInfo=$(echo "$PackageInfoList" | grep "$FilePath")
+		PackageName=""
+
+		# Extract package name
+		if [ ! -z "$PackageInfo" ]
+		then
+			PackageName=$(echo "$PackageInfo" | sed "s!^$FilePath=!!")
+			PackageName="($PackageName) "
+		fi
+			
+		# Remove /filename from the end of the path
+		FileName=${FilePath##*/}
+		FolderPath=$(echo "$FilePath" | sed "s,/$FileName$,,")
+					
+		if [ ! -z "FolderPath" ]
+		then
+			AppFound="true"
+
+			# Log the full path and package name
+			echo "found: $FilePath $PackageName" >> $LogFile
+
+			# Append to REPLACE var
+			REPLACE="$REPLACE$FolderPath"$'\n'
+			
+			# Append to DebloatedList
+			DebloatedList="$DebloatedList$AppName"$'\n'
+		fi
+	done
+	
+	if [ -z "$AppFound" ]
 	then
 		# Log app name if not found
 		LogLine="$AppName --- app not found!"
@@ -217,47 +332,53 @@ echo '' >> $LogFile
 
 # Sort and log REPLACE list
 REPLACE=$(echo "$REPLACE" | sort -fu )
-#echo 'REPLACE="'"$REPLACE"$'\n"' >> $LogFile
-#echo '' >> $LogFile
-
-# List system apps
-lsCommand='ls -l'
-SubPath=*app/*/*.apk
-AppList=$(echo "$lsCommand /system/$SubPath" | sed "s!^$lsCommand!!")
-AppList="$AppList "$(echo "$lsCommand /system/*/$SubPath" | sed "s!^$lsCommand!!")
-
-# Log system apps, not debloated
-echo 'System apps, not debloated:' >> $LogFile
-for FilePath in $AppList
-do
-	# Remove /filename from the end of the path
-	FileName=${FilePath##*/}
-	FolderPath=$(echo "$FilePath" | sed "s,/$FileName$,,")
-
-	# Skip if debloated
-	if [ ! -z $(echo "$REPLACE" | grep "$FolderPath") ]
-	then
-		continue
-	fi
-
-	# Find the corresponding package
-	PackageInfo=$(echo "$PackageInfoList" | grep "$FilePath")
-	PackageName=""
-	if [ ! -z $PackageInfo ]
-	then
-		# Extract package name
-		PackageName=$(echo "$PackageInfo" | sed "s!^$FilePath=!!")
-		PackageName="($PackageName) "
-	fi
-
-	# Log the path and package name
-	echo "$FolderPath $PackageName" >> $LogFile
- 
-done
+echo 'REPLACE="'"$REPLACE"$'\n"' >> $LogFile
 echo '' >> $LogFile
 
 # Replace newline delimiters by spaces in the REPLACE list
 #REPLACE=$(echo "$REPLACE" | tr "\n" " ")
+
+
+if [ ! -z "$VerboseLog" ]
+then
+	# List not debloated system apps
+	NotDebloatedList=""
+	for FilePath in $SystemAppList
+	do
+		# Remove /filename from the end of the path
+		FileName=${FilePath##*/}
+		FolderPath=$(echo "$FilePath" | sed "s,/$FileName$,,")
+
+		# Skip if debloated
+		if [ ! -z $(echo "$REPLACE" | grep "$FolderPath") ]
+		then
+			continue
+		fi
+
+		# Find the corresponding package
+		PackageInfo=$(echo "$PackageInfoList" | grep "$FilePath")
+		PackageName=""
+		if [ ! -z $PackageInfo ]
+		then
+			# Extract package name
+			PackageName=$(echo "$PackageInfo" | sed "s!^$FilePath=!!")
+			PackageName="($PackageName) "
+		fi
+
+		# Append to the NotDebloatedList
+		NotDebloatedList="$NotDebloatedList$FolderPath $PackageName"$'\n'
+	done
+
+	# Sort and log NotDebloatedList
+	NotDebloatedList=$(echo "$NotDebloatedList" | sort -fu )
+	echo "System apps, not debloated: $NotDebloatedList" >> $LogFile
+	echo '' >> $LogFile
+
+	# Log System packages:
+	echo "System packages: $PackageInfoList" >> $LogFile
+	echo '' >> $LogFile
+fi
+
 
 # Note for the log file
 echo "Systemless Debloater log: $LogFile"
