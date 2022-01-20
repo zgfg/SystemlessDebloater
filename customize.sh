@@ -19,7 +19,7 @@ MyFolder=/storage/emulated/0/Download
 # MyFolder=/sdcard/Download
 
 # Module's version
-MyVersion=v1.4.4
+MyVersion=v1.4.5
 
 # Log file
 LogFile=$MyFolder/SystemlessDebloater.log
