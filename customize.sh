@@ -7,7 +7,7 @@
 # It can be used for any Android - just add/remove your unwanted stock app names to /Download/SystemlessDebloaterList.sh script on Internal memory, (re)install the module and reboot.
 # Log will be saved to /Download/SystemlessDebloater.log also to Internal memory.
 # Before debloating the apps, from Settings/Applications, Uninstall (updates) and Clear Data for them!
-# Copyright (c) zgfg @ xda, 2020-2021
+# Copyright (c) zgfg @ xda, 2020-2022
 
 # Magisk Module Installer variable
 REPLACE=""
@@ -19,14 +19,14 @@ MyFolder=/storage/emulated/0/Download
 # MyFolder=/sdcard/Download
 
 # Module's version
-MyVersion=v1.4.3
+MyVersion=v1.4.4
 
 # Log file
 LogFile=$MyFolder/SystemlessDebloater.log
 LogLine="Magisk Module Systemless Debloater (REPLACE) $MyVersion"
 #echo "$LogLine"
 echo "$LogLine log file." > $LogFile
-LogLine='Copyright (c) zgfg @ xda, 2020-2021' 
+LogLine='Copyright (c) zgfg @ xda, 2020-2022' 
 #echo "$LogLine"
 echo "$LogLine" >> $LogFile
 echo '' >> $LogFile
@@ -85,7 +85,7 @@ else
 	echo "# Input debloat list $DebloatListFile for Magisk Module Systemless Debloater (REPLACE) $MyVersion" > $DebloatListFile
 	echo '# Before debloating the apps, from Settings/Applications, Uninstall (updates) and Clear Data for them!' >> $DebloatListFile
 	echo "# Systemless Debloater log: $LogFile" >> $DebloatListFile
-	echo '# Copyright (c) zgfg @ xda, 2020-2021' >> $DebloatListFile
+	echo '# Copyright (c) zgfg @ xda, 2020-2022' >> $DebloatListFile
 	echo ' ' >> $DebloatListFile
 	echo '# Define a list of stock apps for debloating:' >> $DebloatListFile
 	echo 'DebloatList=""' >> $DebloatListFile

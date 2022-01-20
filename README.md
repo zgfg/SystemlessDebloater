@@ -1,8 +1,11 @@
 # Systemless Debloater (REPLACE)
-### Copyright (c) zgfg @ xda, 2020-2021
+### Copyright (c) zgfg @ xda, 2020-2022
 
 ### Links [Support]
 (https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083)
+
+### Links [Source]
+(https://github.com/zgfg/SystemlessDebloater)
 
 ### Description
 Module debloates /system, /system_ext, /product, /vendor and /india apps by searching (at the time of module installation) and listing their paths to the Magisk Module Installer REPLACE variable. 
