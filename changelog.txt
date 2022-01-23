@@ -1,2 +1,2 @@
-#### v1.4.5\r\n1. 
+#### v1.4.5
 Support for module's Update in Magisk 23018
