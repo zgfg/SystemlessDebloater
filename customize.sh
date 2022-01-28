@@ -19,7 +19,7 @@ MyFolder=/storage/emulated/0/Download
 # MyFolder=/sdcard/Download
 
 # Module's version
-MyVersion=v1.4.5
+MyVersion=v1.4.6
 
 # Log file
 LogFile=$MyFolder/SystemlessDebloater.log
@@ -52,6 +52,10 @@ echo "$LogLine"
 echo "$LogLine" >> $LogFile
 echo '' >> $LogFile
 
+
+# Default SAR mount-points (system partitions to search for debloating)
+SarMountPointList="/product /vendor /system_ext /india"
+
 # Default/empty list of app names for debloating and debloated app names 
 DebloatList=""
 DebloatedList=""
@@ -61,6 +65,7 @@ VerboseLog=""
 
 # Searching for possible several instances of system apps for debloating  
 MultiDebloat="true"
+
 
 # Simple example for DebloatList var for the input file SystemlessDebloaterList.sh:
 #DebloatList="EasterEgg CatchLog Traceur wps_lite"
@@ -106,6 +111,10 @@ else
 	echo '# Zman"' >> $DebloatListFile
 fi
 
+# Log input SarMountPointList 
+echo 'Input-SarMountPointList="'"$SarMountPointList"'"' >> $LogFile
+echo '' >> $LogFile
+
 # Log input DebloatList 
 echo 'Input-DebloatList="'"$DebloatList"'"' >> $LogFile
 echo '' >> $LogFile
@@ -116,9 +125,6 @@ then
 	echo "Multiple search/debloat: $MultiDebloat" >> $LogFile
 	echo '' >> $LogFile
 fi
-
-# SAR mount-points
-SarMountPointList="/product /vendor /system_ext /india"
 
 # List system packages
 Packages=$(pm list packages -f | sed 's!^package:!!g')
