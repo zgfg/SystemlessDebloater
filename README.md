@@ -2,17 +2,23 @@
 ### Copyright (c) zgfg @ xda, 2020-2022
 
 ### Links [Support]
-(https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083)
+https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083
 
 ### Links [Source]
-(https://github.com/zgfg/SystemlessDebloater)
+https://github.com/Magisk-Modules-Alt-Repo/SystemlessDebloater
 
 ### Description
-Module debloates /system, /system_ext, /product, /vendor and /india apps by searching (at the time of module installation) and listing their paths to the Magisk Module Installer REPLACE variable. 
-Magisk then creates local system tree that will be (systemlessly) replaced into the /system at every (re)boot. 
-It can be used for any Android - just add/remove your unwanted stock app names to DebloatList var in /Download/SystemlessDebloaterList.sh script on Internal memory, (re)install the module and reboot. 
-Log will be saved to /Download/SystemlessDebloater.log also on Internal memory.
-Before debloating the apps, from Settings/Applications, Uninstall (updates) and Clear Data for them!
+Select and systemlessly debloat preinstalled system apps. Supporting up to System As Root (SAR), Dynamic partitions and Android 12. Module must be installed through Magisk app, not TWRP - please read OP instructions in the XDA thread:
+https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083
 
-Example for the input file /SystemlessDebloaterList.sh:
-DebloatList="EasterEgg CatchLog Traceur wps_lite"
+My repo (old): 
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/zgfg/SystemlessDebloater?label=Release&style=plastic) ![GitHub Release Date](https://img.shields.io/github/release-date/zgfg/SystemlessDebloater?label=Release%20Date&style=plastic) 
+![GitHub Releases](https://img.shields.io/github/downloads/zgfg/SystemlessDebloater/latest/total?label=Downloads%20%28Latest%20Release%29&style=plastic)
+![GitHub All Releases](https://img.shields.io/github/downloads/zgfg/SystemlessDebloater/total?label=Total%20Downloads%20%28All%20Releases%29&style=plastic)
+
+Alt-Repo (new): 
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Magisk-Modules-Alt-Repo/SystemlessDebloater?label=Release&style=plastic) ![GitHub Release Date](https://img.shields.io/github/release-date/Magisk-Modules-Alt-Repo/SystemlessDebloater?label=Release%20Date&style=plastic) 
+![GitHub Releases](https://img.shields.io/github/downloads/Magisk-Modules-Alt-Repo/SystemlessDebloater/latest/total?label=Downloads%20%28Latest%20Release%29&style=plastic)
+![GitHub All Releases](https://img.shields.io/github/downloads/Magisk-Modules-Alt-Repo/SystemlessDebloater/total?label=Total%20Downloads%20%28All%20Releases%29&style=plastic)
