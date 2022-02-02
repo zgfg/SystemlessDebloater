@@ -1,10 +1,14 @@
+#### v1.4.7 
+
+Logging additional info about SAR devices 
+
 #### v1.4.6 
 
 Configurable list of SAR partitions to debloat
 
 #### v1.4.5 
 
-Support for module's Update in Magisk 23018
+Support for module's Update in Magisk 24000
 
 #### v1.4.4
 
