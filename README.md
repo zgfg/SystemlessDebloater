@@ -1,7 +1,7 @@
 # Systemless Debloater (REPLACE)
 
 ### Description
-Select and systemlessly debloat preinstalled system apps. Supporting up to System As Root (SAR), Dynamic partitions and Android 12 (not tested on A13 yet). Module must be installed through Magisk app, not TWRP - please read:
+Select and systemlessly debloat preinstalled system apps. Supporting up to System As Root (SAR), Dynamic partitions and Android 12 (not tested on Androud 13 yet). Module must be installed through Magisk app, not TWRP - please read:
 
 [OP instructions at XDA](https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083)
 
