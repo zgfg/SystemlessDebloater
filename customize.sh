@@ -20,7 +20,7 @@ MyFolder=/storage/emulated/0/Download
 # MyFolder=/sdcard/Download
 
 # Module's version
-MyVersion=v1.4.7
+MyVersion=v1.4.8
 
 # Log file
 LogFile=$MyFolder/SystemlessDebloater.log
@@ -67,7 +67,7 @@ DebloatList=""
 DebloatedList=""
 
 # Verbose logging 
-VerboseLog=""
+VerboseLog="true"
 
 # Searching for possible several instances of system apps for debloating  
 MultiDebloat="true"

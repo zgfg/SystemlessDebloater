@@ -1,3 +1,7 @@
+#### v1.4.8 
+
+Verbose logging by default: logging all not debloated stock system apps 
+
 #### v1.4.7 
 
 Logging additional info about SAR devices 
