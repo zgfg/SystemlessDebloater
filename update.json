@@ -1,6 +1,6 @@
 { 
-  "versionCode": 148,
-  "version": "v1.4.8",
-  "zipUrl": "https://github.com/Magisk-Modules-Alt-Repo/SystemlessDebloater/releases/download/148/SystemlessDebloater_v1.4.8.zip",
-  "changelog": "https://raw.githubusercontent.com/Magisk-Modules-Alt-Repo/SystemlessDebloater/main/changelog.md"
+  "versionCode": 103,
+  "version": "v1.0.3",
+  "zipUrl": "https://github.com/zgfg/BuiltIn-BusyBox/releases/download/103/BuiltIn-BusyBox_v1.0.3.zip",
+  "changelog": "https://raw.githubusercontent.com/zgfg/BuiltIn-BusyBox/main/changelog.md"
 }
