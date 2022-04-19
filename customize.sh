@@ -88,6 +88,9 @@ if [ -f $DebloatListFile ]
 then
 	# Source the input file
 	. $DebloatListFile
+
+	# Strip out one word comments (allows easier grouping)
+	DebloatList=$(echo $DebloatList | tr ' ' '\n' | grep -v '#' | xargs echo)
 else
 	# Log error
 	LogLine='Input file not found, creating a template file!'																					   
