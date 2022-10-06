@@ -1,4 +1,4 @@
-f#!/system/bin/sh
+#!/system/bin/sh
 
 # Installation script customize.sh for Magisk Module Systemless Debloater (REPLACE).
 # XDA thread: https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083
@@ -25,41 +25,35 @@ MyVersion=v1.4.9
 
 # Log file
 LogFile=$LogFolder/SystemlessDebloater.log
-LogLine="Magisk Module Systemless Debloater (REPLACE) $MyVersion"
-#echo "$LogLine"
-echo "$LogLine log file." > $LogFile
-LogLine='Copyright (c) zgfg @ xda, 2020-2022' 
-#echo "$LogLine"
-echo "$LogLine" >> $LogFile
+PrintLine="Magisk Module Systemless Debloater (REPLACE) $MyVersion"
+echo "$PrintLine log file." > $LogFile
+echo 'Copyright (c) zgfg @ xda, 2020-2022' >> $LogFile
+echo "Installation time: $(date +%c)" >> $LogFile
 echo '' >> $LogFile
 
-# Log date and system info
-echo "$(date +%c)" >> $LogFile
+# Log system info
 Prop=$(getprop ro.build.version.release)
-LogLine='Android '$Prop
+PrintLine='Android '$Prop
 Prop=$(getprop ro.build.system_root_image)
 if [ ! -z "$Prop" ] && [ "$Prop" ]
 then
-	LogLine=$LogLine' SAR'
+	PrintLine=$PrintLine' SAR'
 fi
 Prop=$(getprop ro.build.ab_update)
 if [ ! -z "$Prop" ] && [ "$Prop" ]
 then
-	LogLine=$LogLine' A/B'
+	PrintLine=$PrintLine' A/B'
 fi
 Prop=$(getprop ro.boot.slot_suffix)
 if [ ! -z "$Prop" ] && [ "$Prop" ]
 then
-	LogLine=$LogLine" ($Prop)"
+	PrintLine=$PrintLine" ($Prop)"
 fi
-echo "$LogLine"
-echo "$LogLine" >> $LogFile
-LogLine=$(magisk -c)
-echo "$LogLine"
-echo "$LogLine" >> $LogFile
-echo '' >> $LogFile
-
-echo "MODPATH: $MODPATH" >> $LogFile
+echo "$PrintLine"
+echo "$PrintLine" >> $LogFile
+PrintLine=$(magisk -c)
+echo "$PrintLine"
+echo "$PrintLine" >> $LogFile
 echo '' >> $LogFile
 
 # Default SAR mount-points (SAR partitions to search for debloating)
@@ -81,9 +75,9 @@ MultiDebloat="true"
 
 # Input file with a list of app names for debloating
 DebloatListFile=$LogFolder/SystemlessDebloaterList.sh
-LogLine="Input debloat list file: $DebloatListFile"												 					  
-echo "$LogLine"
-echo "$LogLine" >> $LogFile
+PrintLine="Input debloat list file: $DebloatListFile"												 					  
+echo "$PrintLine"
+echo "$PrintLine" >> $LogFile
 echo '' >> $LogFile
 
 # Check if the input list file exists
@@ -93,9 +87,9 @@ then
 	. $DebloatListFile
 else
 	# Log error
-	LogLine='Input file not found, creating a template file!'																					   
-	echo "$LogLine"
-	echo "$LogLine" >> $LogFile
+	PrintLine='Input file not found, creating a template file!'																					   
+	echo "$PrintLine"
+	echo "$PrintLine" >> $LogFile
 	echo "# Input debloat list $DebloatListFile for Magisk Module Systemless Debloater (REPLACE) $MyVersion" > $DebloatListFile
 	echo '# Before debloating the apps, from Settings/Applications, Uninstall (updates) and Clear Data for them!' >> $DebloatListFile
 	echo "# Systemless Debloater log: $LogFile" >> $DebloatListFile
@@ -120,6 +114,10 @@ else
 	echo '# Zman"' >> $DebloatListFile
 fi
 
+echo "Verbose logging: $VerboseLog" >> $LogFile
+echo "Multiple search/debloat: $MultiDebloat" >> $LogFile
+echo '' >> $LogFile
+
 # Log input SarMountPointList 
 echo 'Input-SarMountPointList="'"$SarMountPointList"'"' >> $LogFile
 echo '' >> $LogFile
@@ -128,16 +126,11 @@ echo '' >> $LogFile
 echo 'Input-DebloatList="'"$DebloatList"'"' >> $LogFile
 echo '' >> $LogFile
 
-echo "Verbose logging: $VerboseLog" >> $LogFile
-echo '' >> $LogFile
-echo "Multiple search/debloat: $MultiDebloat" >> $LogFile
-echo '' >> $LogFile
-
 
 # Add /system to SarMountPointList, sort and log
-TempList="/system $SarMountPointList"
+NewList="/system $SarMountPointList"
 SarMountPointList=""
-for SarMountPoint in $TempList
+for SarMountPoint in $NewList
 do		
 	SarMountPointList="$SarMountPointList$SarMountPoint"$'\n'
 done
@@ -209,61 +202,59 @@ echo "Previously debloated Stock apps:"$'\n'"$ReplacedAppList" >> $LogFile
 
 
 # Prepare service.sh file to debloat Stock but not System apps
-ServiceFile="$MODPATH/service.sh"
-echo "ServiceFile: $ServiceFile" >> $LogFile
+ServiceScript="$MODPATH/service.sh"
+echo "ServiceScript: $ServiceScript" >> $LogFile
 echo '' >> $LogFile
 
-touch $ServiceFile
+echo '#!/system/bin/sh' > $ServiceScript
+echo '' >> $ServiceScript
+
+echo "#Magisk Module Systemless Debloater (REPLACE) $MyVersion" >> $ServiceScript
+echo '#Copyright (c) zgfg @ xda, 2020-2022' >> $ServiceScript
+echo "#Installation time: $(date +%c)" >> $ServiceScript
+echo '' >> $ServiceScript
+
+# Log file for service.sh
+echo 'ServiceLogFolder=/data/local/tmp' >> $ServiceScript
+echo 'ServiceLogFile=$ServiceLogFolder/SystemlessDebloater-service.log' >> $ServiceScript
+echo '' >> $ServiceScript
 
 if [ ! -z "$VerboseLog" ]
 then
-	# Log file for service.sh
-	ServiceLine='ServiceLogFolder=/data/local/tmp'
-	echo "$ServiceLine" >> $ServiceFile
-	ServiceLine='ServiceLogFile="$ServiceLogFolder/SystemlessDebloater-service.log"'
-	echo "$ServiceLine" >> $ServiceFile
-	echo '' >> $ServiceFile
-
-	ServiceLine='echo "$(date +%c)" > $ServiceLogFile'
-	echo "$ServiceLine" >> $ServiceFile
-	ServiceLine='echo "" >> $ServiceLogFile'
-	echo "$ServiceLine" >> $ServiceFile
-	echo '' >> $ServiceFile
+	echo 'echo "Execution time: $(date +%c)" > $ServiceLogFile' >> $ServiceScript
+	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript
+else
+	echo 'rm $ServiceLogFile' >> $ServiceScript
 fi
+echo '' >> $ServiceScript
 
-# Module's folder
+# Module's own folder
 MODDIR=$(echo "$MODPATH" | sed "s!/modules_update/!/modules/!")
-ServiceLine="MODDIR=$MODDIR"
-echo "$ServiceLine" >> $ServiceFile
+echo "MODDIR=$MODDIR" >> $ServiceScript
+								   
 
 if [ ! -z "$VerboseLog" ]
 then	
-	ServiceLine='echo "MODDIR: $MODDIR" >> $ServiceLogFile'
-	echo "$ServiceLine" >> $ServiceFile
-	ServiceLine='echo "" >> $ServiceLogFile'
-	echo "$ServiceLine" >> $ServiceFile
-	echo '' >> $ServiceFile
+	echo 'echo "MODDIR: $MODDIR" >> $ServiceLogFile' >> $ServiceScript								
+	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript								
+	echo '' >> $ServiceScript
 fi
 
 # Dummy apk used for debloating
-ServiceLine='DummyApk=$MODDIR/dummy.apk'
-echo "$ServiceLine" >> $ServiceFile
-ServiceLine='touch $DummyApk'
-echo "$ServiceLine" >> $ServiceFile
-echo '' >> $ServiceFile
+echo 'DummyApk=$MODDIR/dummy.apk' >> $ServiceScript							   
+echo 'touch $DummyApk' >> $ServiceScript							   
+echo '' >> $ServiceScript
 
 if [ ! -z "$VerboseLog" ]
 then
-	ServiceLine='echo "DummyApk: $DummyApk" >> $ServiceLogFile'
-	echo "$ServiceLine" >> $ServiceFile
-	ServiceLine='echo "" >> $ServiceLogFile'
-	echo "$ServiceLine" >> $ServiceFile
-	echo '' >> $ServiceFile
+	echo 'echo "DummyApk: $DummyApk" >> $ServiceLogFile' >> $ServiceScript							
+	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript							
+	echo '' >> $ServiceScript
 fi
 
 # Mount and bind for debloating
-ServiceLine='MountBind="mount -o bind"'
-echo "$ServiceLine" >> $ServiceFile
+echo 'MountBind="mount -o bind"' >> $ServiceScript
+echo '' >> $ServiceScript
 
 # List of apps to debloat by mounting
 MountList=""
@@ -369,21 +360,21 @@ do
 	if [ -z "$AppFound" ]
 	then
 		# Log app name if not found
-		LogLine="$AppName --- app not found!"
-		echo "$LogLine"
-		echo "$LogLine" >> $LogFile
+		PrintLine="$AppName --- app not found!"
+		echo "$PrintLine"
+		echo "$PrintLine" >> $LogFile
 	fi
 done
 echo '' >> $LogFile
 
 if [ -z "$REPLACE" ]
 then
-	LogLine="No app for debloating found!"
-	echo "$LogLine"
-	echo "$LogLine" >> $LogFile
-	LogLine='Before debloating the apps, from Settings/Applications, Uninstall (updates) and Clear Data for them!'
-	echo "$LogLine"
-	echo "$LogLine" >> $LogFile
+	PrintLine="No app for debloating found!"
+	echo "$PrintLine"
+	echo "$PrintLine" >> $LogFile
+	PrintLine='Before debloating the apps, from Settings/Applications, Uninstall (updates) and Clear Data for them!'
+	echo "$PrintLine"
+	echo "$PrintLine" >> $LogFile
 	echo '' >> $LogFile
 fi
 
@@ -405,8 +396,8 @@ echo '' >> $LogFile
 # Debloat by mounting in servise.sh
 for MountApk in $MountList
 do
-	ServiceLine='$MountBind $DummyApk '"$MountApk"
-	echo "$ServiceLine" >> $ServiceFile
+	PrintLine='$MountBind $DummyApk '"$MountApk"
+	echo "$PrintLine" >> $ServiceScript
 done
 
 
