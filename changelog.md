@@ -1,3 +1,7 @@
+#### v1.4.9 
+
+Adding service.sh to debloat (by mounting dummy.apk) additional stock apps
+
 #### v1.4.8 
 
 Verbose logging by default: listing all not debloated stock system apps 
