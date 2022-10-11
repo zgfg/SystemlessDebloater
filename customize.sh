@@ -20,7 +20,7 @@ LogFolder=/storage/emulated/0/Download
 # LogFolder=/sdcard/Download
 
 # Module's version
-MyVersion=v1.4.9
+MyVersion=v1.5.0
 
 
 # Log file
@@ -118,37 +118,66 @@ echo "Verbose logging: $VerboseLog" >> $LogFile
 echo "Multiple search/debloat: $MultiDebloat" >> $LogFile
 echo '' >> $LogFile
 
-# Log input SarMountPointList 
-echo 'Input-SarMountPointList="'"$SarMountPointList"'"' >> $LogFile
-echo '' >> $LogFile
-
-# Log input DebloatList 
-echo 'Input-DebloatList="'"$DebloatList"'"' >> $LogFile
-echo '' >> $LogFile
-
-
-# Add /system to SarMountPointList, sort and log
-NewList="/system $SarMountPointList"
-SarMountPointList=""
-for SarMountPoint in $NewList
-do		
-	SarMountPointList="$SarMountPointList$SarMountPoint"$'\n'
-done
-
-SarMountPointList=$(echo "$SarMountPointList" | sort -bu )
 
 # List Stock packages
 Packages=$(pm list packages -f | sed 's!^package:!!g')
+
+
+# Log input SarMountPointList 
+echo 'Input SarMountPointList="'"$SarMountPointList"'"' >> $LogFile
+echo '' >> $LogFile
+
+# Add /system to SarMountPointList
+NewList="/system $SarMountPointList "
+
+# Search through packages to add potential mount points
+NewList="$SarMountPointList"$'\n'
+for PackageInfo in $Packages
+do
+	# Extract potential mount point path from PackageInfo
+	Path=$(echo "$PackageInfo" | cut -d '/' -f 2)
+
+	# Append to NewList
+	NewList="$NewList/$Path"$'\n'
+done
+
+# Sort NewList to remove duplicates
+NewList=$(echo "$NewList" | sort -bu )
+
+# List not valid paths for (systemless) debloating
+BannedList="/data /apex /framework"
+
+# Exclude not valid paths from SarMountPointList
+SarMountPointList=""
+for Path in $NewList
+do
+	# Skip not valid paths
+	for BannedPath in $BannedList
+	do
+		if [ "$Path" = "$BannedPath" ]
+		then
+			Path=""
+			break
+		fi
+	done
+
+	# Append to SarMountPointList
+	if [ ! -z "$Path" ]
+	then
+		SarMountPointList="$SarMountPointList$Path"$'\n'
+	fi	
+done
+
+# Log final SarMountPointList 
+echo 'Final SarMountPointList="'$'\n'"$SarMountPointList"'"' >> $LogFile
+echo '' >> $LogFile
+
+
+# List Stock packages
 PackageInfoList=""
 for PackageInfo in $Packages
 do
-	# Skip user applications
-	if [ ! -z $(echo "$PackageInfo" | grep '^/data') ]
-	then
-		continue
-	fi
-
-	# Include applications from SAR mount points
+	# Include only applications from SAR mount points
 	for SarMountPoint in $SarMountPointList
 	do		
 		if [ -z $(echo "$PackageInfo" | grep '^$SarMountPoint/') ]
@@ -166,6 +195,10 @@ done
 # Sort PackageInfoList
 PackageInfoList=$(echo "$PackageInfoList" | sort -bu )
 
+
+# Log input DebloatList 
+echo 'Input DebloatList="'"$DebloatList"'"' >> $LogFile
+echo '' >> $LogFile
 
 #Search for Stock apps
 StockAppList=""
@@ -195,9 +228,10 @@ do
 	fi
 done
 
-# Sort and log ReplacedAppList
+# Sort ReplacedAppList
 #ReplacedAppList=$(echo "$ReplacedAppList" | sort -bu )
 
+# Log ReplacedAppList
 echo "Previously debloated Stock apps:"$'\n'"$ReplacedAppList" >> $LogFile
 
 
