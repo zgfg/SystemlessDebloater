@@ -8,4 +8,4 @@ description=Select and debloat preinstalled system apps. Supported up to SAR, Dy
 
 support=https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083
 
-updateJson=https://raw.githubusercontent.com/Magisk-Modules-Alt-Repo/SystemlessDebloater/main/update.json
+updateJson=https://raw.githubusercontent.com/zgfg/SystemlessDebloater/main/update.json
