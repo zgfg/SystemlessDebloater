@@ -1,3 +1,7 @@
+#### v1.5.0 
+
+Automatically search through packages to find SAR mount points
+
 #### v1.4.9 
 
 Adding service.sh to debloat (by mounting dummy.apk) additional stock apps
@@ -16,7 +20,7 @@ Configurable list of SAR partitions to debloat
 
 #### v1.4.5 
 
-Support for module's Update in Magisk 24000
+Support for module's Update in Magisk v20.4+
 
 #### v1.4.4
 
@@ -24,4 +28,4 @@ Shortened Github repo name to align with module's id
 
 #### v1.4.3
 
-Findining and debloating possible duplicates in sytem apps
+Findining and debloating possible duplicates in system apps

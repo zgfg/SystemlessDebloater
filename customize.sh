@@ -8,7 +8,13 @@
 # It can be used for any Android - just add/remove your unwanted Stock app names to /Download/SystemlessDebloaterList.sh script on Internal memory, (re)install the module and reboot.
 # Log will be saved to /Download/SystemlessDebloater.log also to Internal memory.
 # Before debloating the apps, from Settings/Applications, Uninstall (updates) and Clear Data for them!
-# Copyright (c) zgfg @ xda, 2020-2022
+# Copyright (c) zgfg @ xda, 2020-2023
+
+if [ -z $BOOTMODE ] ||  ! $BOOTMODE 
+then
+	abort "ERROR: Install from Magisk app, not from TWRP!"
+fi
+
 
 # Magisk Module Installer variable
 REPLACE=""
@@ -27,7 +33,7 @@ MyVersion=v1.5.0
 LogFile=$LogFolder/SystemlessDebloater.log
 PrintLine="Magisk Module Systemless Debloater (REPLACE) $MyVersion"
 echo "$PrintLine log file." > $LogFile
-echo 'Copyright (c) zgfg @ xda, 2020-2022' >> $LogFile
+echo 'Copyright (c) zgfg @ xda, 2020-2023' >> $LogFile
 echo "Installation time: $(date +%c)" >> $LogFile
 echo '' >> $LogFile
 
@@ -56,8 +62,14 @@ echo "$PrintLine"
 echo "$PrintLine" >> $LogFile
 echo '' >> $LogFile
 
+
 # Default SAR mount-points (SAR partitions to search for debloating)
-SarMountPointList="/product /vendor /system_ext /india /my_bigball"
+#SarMountPointList="/system product /vendor /system_ext /india /my_bigball"  #toDo
+SarMountPointList=""
+
+# Invalid paths for (systemless) debloating
+#InvalidMountPointList="/data /apex /framework"  #toDo
+InvalidMountPointList="/data /framework"
 
 # Default/empty list of app names for debloating and debloated app names 
 DebloatList=""
@@ -93,7 +105,7 @@ else
 	echo "# Input debloat list $DebloatListFile for Magisk Module Systemless Debloater (REPLACE) $MyVersion" > $DebloatListFile
 	echo '# Before debloating the apps, from Settings/Applications, Uninstall (updates) and Clear Data for them!' >> $DebloatListFile
 	echo "# Systemless Debloater log: $LogFile" >> $DebloatListFile
-	echo '# Copyright (c) zgfg @ xda, 2020-2022' >> $DebloatListFile
+	echo '# Copyright (c) zgfg @ xda, 2020-2023' >> $DebloatListFile
 	echo ' ' >> $DebloatListFile
 	echo '# Define a list of Stock apps for debloating:' >> $DebloatListFile
 	echo 'DebloatList=""' >> $DebloatListFile
@@ -123,38 +135,47 @@ echo '' >> $LogFile
 Packages=$(pm list packages -f | sed 's!^package:!!g')
 
 
-# Log input SarMountPointList 
-echo 'Input SarMountPointList="'"$SarMountPointList"'"' >> $LogFile
+# Log input SarMountPointList
+if [ ! -z "$VerboseLog" ] && $VerboseLog
+then
+	echo 'Input SarMountPointList="'"$SarMountPointList"'"' >> $LogFile
+	echo '' >> $LogFile
+fi
+
+# Log InvalidMountPointList
+echo 'InvalidMountPointList="'"$InvalidMountPointList"'"' >> $LogFile
 echo '' >> $LogFile
 
 # Add /system to SarMountPointList
-NewList="/system $SarMountPointList "
+NewList=$SarMountPointList
+SarMountPointList="/system"$'\n'
+for Path in $NewList
+do
+	# Append to SarMountPointList
+	SarMountPointList="$SarMountPointList$Path"$'\n'
+done
 
 # Search through packages to add potential mount points
-NewList="$SarMountPointList"$'\n'
 for PackageInfo in $Packages
 do
 	# Extract potential mount point path from PackageInfo
 	Path=$(echo "$PackageInfo" | cut -d '/' -f 2)
 
-	# Append to NewList
-	NewList="$NewList/$Path"$'\n'
+	# Append to SarMountPointList
+	SarMountPointList="$SarMountPointList/$Path"$'\n'
 done
 
-# Sort NewList to remove duplicates
-NewList=$(echo "$NewList" | sort -bu )
-
-# List not valid paths for (systemless) debloating
-BannedList="/data /apex /framework"
+# Sort SarMountPointList to remove duplicates
+NewList=$(echo "$SarMountPointList" | sort -bu )
 
 # Exclude not valid paths from SarMountPointList
 SarMountPointList=""
 for Path in $NewList
 do
 	# Skip not valid paths
-	for BannedPath in $BannedList
+	for InvalidPath in $InvalidMountPointList
 	do
-		if [ "$Path" = "$BannedPath" ]
+		if [ "$Path" = "$InvalidPath" ]
 		then
 			Path=""
 			break
@@ -168,9 +189,34 @@ do
 	fi	
 done
 
+# Sort SarMountPointList
+SarMountPointList=$(echo "$SarMountPointList" | sort -bu )
+
 # Log final SarMountPointList 
-echo 'Final SarMountPointList="'$'\n'"$SarMountPointList"'"' >> $LogFile
+echo 'Final SarMountPointList="'"$SarMountPointList"'"' >> $LogFile
 echo '' >> $LogFile
+
+
+# Log input DebloatList 
+echo 'Input DebloatList="'"$DebloatList"'"' >> $LogFile
+echo '' >> $LogFile
+
+# Sort DebloatList
+NewList=$DebloatList
+DebloatList=""
+for AppName in $NewList
+do
+	# Append to DebloatList
+	DebloatList="$DebloatList$AppName"$'\n'
+done
+DebloatList=$(echo "$DebloatList" | sort -bu )
+
+# Log final DebloatList 
+if [ ! -z "$VerboseLog" ] && $VerboseLog
+then
+	echo 'Final DebloatList="'"$DebloatList"'"' >> $LogFile
+	echo '' >> $LogFile
+fi
 
 
 # List Stock packages
@@ -196,10 +242,6 @@ done
 PackageInfoList=$(echo "$PackageInfoList" | sort -bu )
 
 
-# Log input DebloatList 
-echo 'Input DebloatList="'"$DebloatList"'"' >> $LogFile
-echo '' >> $LogFile
-
 #Search for Stock apps
 StockAppList=""
 for SarMountPoint in $SarMountPointList
@@ -211,9 +253,6 @@ do
 		StockAppList="$StockAppList$NewList"$'\n'
 	fi
 done
-
-# Sort StockAppList
-#StockAppList=$(echo "$StockAppList" | sort -bu )
 
 
 #Search for previously debloated Stock apps
@@ -244,7 +283,7 @@ echo '#!/system/bin/sh' > $ServiceScript
 echo '' >> $ServiceScript
 
 echo "#Magisk Module Systemless Debloater (REPLACE) $MyVersion" >> $ServiceScript
-echo '#Copyright (c) zgfg @ xda, 2020-2022' >> $ServiceScript
+echo '#Copyright (c) zgfg @ xda, 2020-2023' >> $ServiceScript
 echo "#Installation time: $(date +%c)" >> $ServiceScript
 echo '' >> $ServiceScript
 
@@ -253,7 +292,7 @@ echo 'ServiceLogFolder=/data/local/tmp' >> $ServiceScript
 echo 'ServiceLogFile=$ServiceLogFolder/SystemlessDebloater-service.log' >> $ServiceScript
 echo '' >> $ServiceScript
 
-if [ ! -z "$VerboseLog" ]
+if [ ! -z "$VerboseLog" ] && $VerboseLog
 then
 	echo 'echo "Execution time: $(date +%c)" > $ServiceLogFile' >> $ServiceScript
 	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript
@@ -267,7 +306,7 @@ MODDIR=$(echo "$MODPATH" | sed "s!/modules_update/!/modules/!")
 echo "MODDIR=$MODDIR" >> $ServiceScript
 								   
 
-if [ ! -z "$VerboseLog" ]
+if [ ! -z "$VerboseLog" ] && $VerboseLog
 then	
 	echo 'echo "MODDIR: $MODDIR" >> $ServiceLogFile' >> $ServiceScript								
 	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript								
@@ -279,7 +318,7 @@ echo 'DummyApk=$MODDIR/dummy.apk' >> $ServiceScript
 echo 'touch $DummyApk' >> $ServiceScript							   
 echo '' >> $ServiceScript
 
-if [ ! -z "$VerboseLog" ]
+if [ ! -z "$VerboseLog" ] && $VerboseLog
 then
 	echo 'echo "DummyApk: $DummyApk" >> $ServiceLogFile' >> $ServiceScript							
 	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript							
@@ -294,9 +333,6 @@ echo '' >> $ServiceScript
 MountList=""
 
 
-# Sort DebloatList
-DebloatList=$(echo "$DebloatList" | sort -bu )
-
 # Iterate through apps for debloating
 echo 'Debloating:' >> $LogFile
 for AppName in $DebloatList
@@ -309,7 +345,7 @@ do
 	for FilePath in $SearchList
 	do
 		# Break if app already found
-		if [ -z "$MultiDebloat" ]
+		if [ -z "$MultiDebloat" ] && $MultiDebloat
 		then
 			if [ ! -z "$AppFound" ] 
 			then
@@ -347,7 +383,7 @@ do
 	SearchList=$(echo "$StockAppList" | grep "$SearchName$")
 	for FilePath in $SearchList
 	do
-		if [ -z "$MultiDebloat" ]
+		if [ -z "$MultiDebloat" ] && $MultiDebloat
 		then
 			if [ ! -z "$AppFound" ] 
 			then
@@ -436,7 +472,7 @@ done
 
 
 # Log Stock apps and packages
-if [ ! -z "$VerboseLog" ]
+if [ ! -z "$VerboseLog" ] && $VerboseLog
 then
 	echo "Stock apps:"$'\n'"$StockAppList" >> $LogFile
 	echo "Stock packages: $PackageInfoList" >> $LogFile
