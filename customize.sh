@@ -185,12 +185,9 @@ do
 	# Append to SarMountPointList
 	if [ ! -z "$Path" ]
 	then
-		SarMountPointList="$SarMountPointList$Path"$'\n'
+		SarMountPointList="$SarMountPointList"$'\n'"$Path"
 	fi	
 done
-
-# Sort SarMountPointList
-SarMountPointList=$(echo "$SarMountPointList" | sort -bu )
 
 # Log final SarMountPointList 
 echo 'Final SarMountPointList="'"$SarMountPointList"'"' >> $LogFile
