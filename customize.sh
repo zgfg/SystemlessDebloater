@@ -10,7 +10,7 @@
 # Before debloating the apps, from Settings/Applications, Uninstall (updates) and Clear Data for them!
 # Copyright (c) zgfg @ xda, 2020-2023
 
-if [ -z $BOOTMODE ] ||  ! $BOOTMODE 
+if [ -z $BOOTMODE ] ||  [ "$BOOTMODE" != "true" ] 
 then
 	abort "ERROR: Install from Magisk app, not from TWRP!"
 fi
@@ -136,7 +136,7 @@ Packages=$(pm list packages -f | sed 's!^package:!!g')
 
 
 # Log input SarMountPointList
-if [ ! -z "$VerboseLog" ] && $VerboseLog
+if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
 then
 	echo 'Input SarMountPointList="'"$SarMountPointList"'"' >> $LogFile
 	echo '' >> $LogFile
@@ -209,7 +209,7 @@ done
 DebloatList=$(echo "$DebloatList" | sort -bu )
 
 # Log final DebloatList 
-if [ ! -z "$VerboseLog" ] && $VerboseLog
+if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
 then
 	echo 'Final DebloatList="'"$DebloatList"'"' >> $LogFile
 	echo '' >> $LogFile
@@ -289,7 +289,7 @@ echo 'ServiceLogFolder=/data/local/tmp' >> $ServiceScript
 echo 'ServiceLogFile=$ServiceLogFolder/SystemlessDebloater-service.log' >> $ServiceScript
 echo '' >> $ServiceScript
 
-if [ ! -z "$VerboseLog" ] && $VerboseLog
+if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
 then
 	echo 'echo "Execution time: $(date +%c)" > $ServiceLogFile' >> $ServiceScript
 	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript
@@ -303,7 +303,7 @@ MODDIR=$(echo "$MODPATH" | sed "s!/modules_update/!/modules/!")
 echo "MODDIR=$MODDIR" >> $ServiceScript
 								   
 
-if [ ! -z "$VerboseLog" ] && $VerboseLog
+if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
 then	
 	echo 'echo "MODDIR: $MODDIR" >> $ServiceLogFile' >> $ServiceScript								
 	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript								
@@ -315,7 +315,7 @@ echo 'DummyApk=$MODDIR/dummy.apk' >> $ServiceScript
 echo 'touch $DummyApk' >> $ServiceScript							   
 echo '' >> $ServiceScript
 
-if [ ! -z "$VerboseLog" ] && $VerboseLog
+if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
 then
 	echo 'echo "DummyApk: $DummyApk" >> $ServiceLogFile' >> $ServiceScript							
 	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript							
@@ -342,7 +342,7 @@ do
 	for FilePath in $SearchList
 	do
 		# Break if app already found
-		if [ -z "$MultiDebloat" ] && $MultiDebloat
+		if [ -z "$MultiDebloat" ] && [ "$MultiDebloat" = "true" ]
 		then
 			if [ ! -z "$AppFound" ] 
 			then
@@ -380,7 +380,7 @@ do
 	SearchList=$(echo "$StockAppList" | grep "$SearchName$")
 	for FilePath in $SearchList
 	do
-		if [ -z "$MultiDebloat" ] && $MultiDebloat
+		if [ -z "$MultiDebloat" ] && [ "$MultiDebloatt" = "true" ]
 		then
 			if [ ! -z "$AppFound" ] 
 			then
@@ -469,7 +469,7 @@ done
 
 
 # Log Stock apps and packages
-if [ ! -z "$VerboseLog" ] && $VerboseLog
+if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
 then
 	echo "Stock apps:"$'\n'"$StockAppList" >> $LogFile
 	echo "Stock packages: $PackageInfoList" >> $LogFile
