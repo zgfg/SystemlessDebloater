@@ -1,11 +1,7 @@
-id=SystemlessDebloater
-name=Systemless Debloater (REPLACE)
-version=1.5.0
-versionCode=150
+id=ToyBox-Ext
+name=ToyBox (Ext)
+version=1.0.4
+versionCode=104
 author=zgfg @ xda
-
-description=Select and debloat preinstalled system apps. Supported up to SAR, Dynamic partitions and A13. Module must be installed through Magisk app, not TWRP - see OP instructions in the XDA thread.
-
-support=https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083
-
-updateJson=https://raw.githubusercontent.com/zgfg/SystemlessDebloater/main/update.json
+description=Install (additional) toybox applets. SUPPORTED: ARMv7 and higher 
+updateJson=https://raw.githubusercontent.com/zgfg/ToyBox-Ext/main/update.json
