@@ -1,0 +1,27 @@
+## User configuration file for Systemless Debloater (REPLACE) Magisk Module
+## Copyright (c) zgfg @ xda-developers.
+
+## Make sure to uninstall updates and clear data of the apps you want to debloate before you hide them.
+## Some devices you might have to finish uninstalling the apps after debloating them.
+
+## The config file is a list of the app names you want to remove (hide).
+## The file must be named sDebloater_config or sDebloater-config.txt and placed in the download directory.
+
+## Example list to remove calculator, Chrome, YouTube and YT Music.
+## Google QuickSearch (Velvet) will not be removed since it marked as a comment by adding # infront of the name.
+
+## Define a list of stock apps for debloating:
+
+## Generic (Android)
+Calculator
+
+## Google
+CalculatorGooglePrebuilt
+Chrome
+Chrome-Stub
+# Velvet
+YouTube
+YouTubeMusicPrebuilt
+
+## LineageOS
+ExactCalculator
