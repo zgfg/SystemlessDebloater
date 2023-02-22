@@ -1,11 +1,12 @@
 #!/system/bin/sh
 
-# Magisk Module: Systemless Debloater v1.5.0
+# Magisk Module: Systemless Debloater v1.5.1
 # Copyright (c) zgfg @ xda, 2020-
+# Improvements by ipdev @ xda in progress 
 # XDA thread: https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083
 # GitHub source: https://github.com/zgfg/SystemlessDebloater
 
-if [ -z $BOOTMODE ] ||  [ "$BOOTMODE" != "true" ] 
+if [ -z $BOOTMODE ] || [ "$BOOTMODE" != "true" ]
 then
 	abort "ERROR: Install from Magisk app, not from TWRP!"
 fi
@@ -21,7 +22,51 @@ LogFolder=/storage/emulated/0/Download
 # LogFolder=/sdcard/Download
 
 # Module's version
-MyVersion=v1.5.0
+MyVersion=v1.5.1
+
+
+## Set functions
+
+convert_config_file(){
+	echo "Input debloat list file:" | tee -a $LogFile
+	echo " "$UserConfg | tee -a $LogFile
+	echo "" | tee -a $LogFile
+
+	sed -e '/^#/d' -e 's/#.*//g' -e 's/\"//g' -e 's/[ \t ]//g' -e '/^\s*$/d' $UserConfg > $TMPDIR/tmp_config
+
+	if grep -q 'VerboseLog' $TMPDIR/tmp_config
+	then
+		echo "VerboseLog=\"true\"" >> $DebloatListFile
+		sed -i -e '/VerboseLog/d' $TMPDIR/tmp_config
+		echo "" >> $DebloatListFile
+	fi
+
+	if grep -q 'MultiDebloat' $TMPDIR/tmp_config
+	then
+		echo "MultiDebloat=\"true\"" >> $DebloatListFile
+		sed -i -e '/MultiDebloat/d' $TMPDIR/tmp_config
+		echo "" >> $DebloatListFile
+	fi
+
+	echo "DebloatList=\"" >> $DebloatListFile
+	while read i
+	do
+		echo $i >> $DebloatListFile
+	done < $TMPDIR/tmp_config
+	echo "\"" >> $DebloatListFile
+	rm $TMPDIR/tmp_config
+}
+
+example_config(){
+	cp $MODPATH/sDebloater_example $LogFolder/
+	if [ -f "$LogFolder"/sDebloater_example ]
+	then
+		echo ""
+		echo " Example configuration file saved as :" | tee -a $LogFile
+		echo "  "$LogFolder/sDebloater_example | tee -a $LogFile
+	fi
+	echo "" | tee -a $LogFile
+}
 
 
 # Log file
@@ -29,6 +74,7 @@ LogFile=$LogFolder/SystemlessDebloater.log
 PrintLine="Magisk Module: Systemless Debloater $MyVersion"
 echo "$PrintLine log file." > $LogFile
 echo 'Copyright (c) zgfg @ xda, 2020-' >> $LogFile
+echo 'Improvements by ipdev @ xda in progress' >> $LogFile
 echo "Installation time: $(date +%c)" >> $LogFile
 echo '' >> $LogFile
 
@@ -66,14 +112,14 @@ SarMountPointList=""
 #InvalidMountPointList="/data /apex /framework"  #toDo
 InvalidMountPointList="/data /framework"
 
-# Default/empty list of app names for debloating and debloated app names 
+# Default/empty list of app names for debloating and debloated app names
 DebloatList=""
 DebloatedList=""
 
-# Verbose logging 
+# Verbose logging
 VerboseLog="true"
 
-# Searching for possible several instances of Stock apps for debloating  
+# Searching for possible several instances of Stock apps for debloating
 MultiDebloat="true"
 
 
@@ -181,15 +227,15 @@ do
 	if [ ! -z "$Path" ]
 	then
 		SarMountPointList="$SarMountPointList"$'\n'"$Path"
-	fi	
+	fi
 done
 
-# Log final SarMountPointList 
+# Log final SarMountPointList
 echo 'Final SarMountPointList="'"$SarMountPointList"'"' >> $LogFile
 echo '' >> $LogFile
 
 
-# Log input DebloatList 
+# Log input DebloatList
 echo 'Input DebloatList="'"$DebloatList"'"' >> $LogFile
 echo '' >> $LogFile
 
@@ -203,7 +249,7 @@ do
 done
 DebloatList=$(echo "$DebloatList" | sort -bu )
 
-# Log final DebloatList 
+# Log final DebloatList
 if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
 then
 	echo 'Final DebloatList="'"$DebloatList"'"' >> $LogFile
@@ -217,14 +263,14 @@ for PackageInfo in $Packages
 do
 	# Include only applications from SAR mount points
 	for SarMountPoint in $SarMountPointList
-	do		
+	do
 		if [ -z $(echo "$PackageInfo" | grep '^$SarMountPoint/') ]
 		then
 			PrepPackageInfo=$PackageInfo
 
 			# Append to the PackageInfoList
 			PackageInfoList="$PackageInfoList$PrepPackageInfo"$'\n'
-			
+
 			break
 		fi
 	done
@@ -249,7 +295,7 @@ done
 
 #Search for previously debloated Stock apps
 ReplacedAppList=""
-for SarMountPoint in $SarMountPointList 
+for SarMountPoint in $SarMountPointList
 do
 	NewList=$(find "$SarMountPoint/" -type f -name ".replace" 2> /dev/null)
 
@@ -296,24 +342,24 @@ echo '' >> $ServiceScript
 # Module's own folder
 MODDIR=$(echo "$MODPATH" | sed "s!/modules_update/!/modules/!")
 echo "MODDIR=$MODDIR" >> $ServiceScript
-								   
+
 
 if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
-then	
-	echo 'echo "MODDIR: $MODDIR" >> $ServiceLogFile' >> $ServiceScript								
-	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript								
+then
+	echo 'echo "MODDIR: $MODDIR" >> $ServiceLogFile' >> $ServiceScript
+	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript
 	echo '' >> $ServiceScript
 fi
 
 # Dummy apk used for debloating
-echo 'DummyApk=$MODDIR/dummy.apk' >> $ServiceScript							   
-echo 'touch $DummyApk' >> $ServiceScript							   
+echo 'DummyApk=$MODDIR/dummy.apk' >> $ServiceScript
+echo 'touch $DummyApk' >> $ServiceScript
 echo '' >> $ServiceScript
 
 if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
 then
-	echo 'echo "DummyApk: $DummyApk" >> $ServiceLogFile' >> $ServiceScript							
-	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript							
+	echo 'echo "DummyApk: $DummyApk" >> $ServiceLogFile' >> $ServiceScript
+	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript
 	echo '' >> $ServiceScript
 fi
 
@@ -331,7 +377,7 @@ for AppName in $DebloatList
 do
 	AppFound=""
 
-	#Search through previously debloated Stock apps	
+	#Search through previously debloated Stock apps
 	SearchName=/"$AppName"/.replace
 	SearchList=$(echo "$ReplacedAppList" | grep "$SearchName$")
 	for FilePath in $SearchList
@@ -339,47 +385,47 @@ do
 		# Break if app already found
 		if [ -z "$MultiDebloat" ] && [ "$MultiDebloat" = "true" ]
 		then
-			if [ ! -z "$AppFound" ] 
+			if [ ! -z "$AppFound" ]
 			then
-				break					
+				break
 			fi
 		fi
-	
+
 		# Remove /filename from the end of the path
 		FileName=${FilePath##*/}
 		FolderPath=$(echo "$FilePath" | sed "s,/$FileName$,,")
-					
+
 		if [ ! -z "FolderPath" ]
 		then
 			AppFound="true"
 
 			# Log the full path
 			echo "found: $FilePath" >> $LogFile
-				
+
 			if [ -z $(echo "$FolderPath" | grep '^/system/') ]
 			then
 				# Append to MountList with appended AppName
-				MountList="$MountList$FolderPath/$AppName.apk"$'\n'			
+				MountList="$MountList$FolderPath/$AppName.apk"$'\n'
 			else
 				# Append to REPLACE list
-				REPLACE="$REPLACE$FolderPath"$'\n'			
+				REPLACE="$REPLACE$FolderPath"$'\n'
 			fi
-			
+
 			# Append to DebloatedList
 			DebloatedList="$DebloatedList$AppName"$'\n'
 		fi
 	done
 
-	#Search through Stock apps	
+	#Search through Stock apps
 	SearchName=/"$AppName".apk
 	SearchList=$(echo "$StockAppList" | grep "$SearchName$")
 	for FilePath in $SearchList
 	do
 		if [ -z "$MultiDebloat" ] && [ "$MultiDebloatt" = "true" ]
 		then
-			if [ ! -z "$AppFound" ] 
+			if [ ! -z "$AppFound" ]
 			then
-				break					
+				break
 			fi
 		fi
 
@@ -393,11 +439,11 @@ do
 			PackageName=$(echo "$PackageInfo" | sed "s!^$FilePath=!!")
 			PackageName="($PackageName) "
 		fi
-			
+
 		# Remove /filename from the end of the path
 		FileName=${FilePath##*/}
 		FolderPath=$(echo "$FilePath" | sed "s,/$FileName$,,")
-					
+
 		if [ ! -z "FolderPath" ]
 		then
 			AppFound="true"
@@ -408,17 +454,17 @@ do
 			if [ -z $(echo "$FolderPath" | grep '^/system/') ]
 			then
 				# Append to MountList
-				MountList="$MountList$FilePath"$'\n'			
+				MountList="$MountList$FilePath"$'\n'
 			else
 				# Append to REPLACE list
-				REPLACE="$REPLACE$FolderPath"$'\n'			
+				REPLACE="$REPLACE$FolderPath"$'\n'
 			fi
-			
+
 			# Append to DebloatedList
 			DebloatedList="$DebloatedList$AppName"$'\n'
 		fi
 	done
-	
+
 	if [ -z "$AppFound" ]
 	then
 		# Log app name if not found
@@ -450,7 +496,7 @@ REPLACE=$(echo "$REPLACE" | sort -bu )
 echo 'REPLACE="'"$REPLACE"$'\n"' >> $LogFile
 echo '' >> $LogFile
 
-# Sort and log MountList 
+# Sort and log MountList
 MountList=$(echo "$MountList" | sort -bu )
 echo 'MountList="'"$MountList"$'\n"' >> $LogFile
 echo '' >> $LogFile
@@ -469,6 +515,14 @@ then
 	echo "Stock apps:"$'\n'"$StockAppList" >> $LogFile
 	echo "Stock packages: $PackageInfoList" >> $LogFile
 fi
+
+
+# Cleanup
+
+## Remove temporary and unnecessary files if they still exist.
+[ -f "$TMPDIR"/tmp_config ] && rm $TMPDIR/tmp_config
+[ -f "$TMPDIR"/sDebloater_list.sh ] && rm $TMPDIR/sDebloater_list.sh
+[ -f "$MODPATH"/sDebloater_example ] && rm $MODPATH/sDebloater_example
 
 
 # Note for the log file
