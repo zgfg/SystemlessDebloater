@@ -2,7 +2,7 @@
 
 # Magisk Module: Systemless Debloater v1.5.1
 # Copyright (c) zgfg @ xda, 2020-
-# Improvements by ipdev @ xda in progress 
+# Config file improvements provided by ipdev @ xda (in progress)
 # XDA thread: https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083
 # GitHub source: https://github.com/zgfg/SystemlessDebloater
 
@@ -25,56 +25,11 @@ LogFolder=/storage/emulated/0/Download
 MyVersion=v1.5.1
 
 
-## Set functions
-
-convert_config_file(){
-	echo "Input debloat list file:" | tee -a $LogFile
-	echo " "$UserConfg | tee -a $LogFile
-	echo "" | tee -a $LogFile
-
-	sed -e '/^#/d' -e 's/#.*//g' -e 's/\"//g' -e 's/[ \t ]//g' -e '/^\s*$/d' $UserConfg > $TMPDIR/tmp_config
-
-	if grep -q 'VerboseLog' $TMPDIR/tmp_config
-	then
-		echo "VerboseLog=\"true\"" >> $DebloatListFile
-		sed -i -e '/VerboseLog/d' $TMPDIR/tmp_config
-		echo "" >> $DebloatListFile
-	fi
-
-	if grep -q 'MultiDebloat' $TMPDIR/tmp_config
-	then
-		echo "MultiDebloat=\"true\"" >> $DebloatListFile
-		sed -i -e '/MultiDebloat/d' $TMPDIR/tmp_config
-		echo "" >> $DebloatListFile
-	fi
-
-	echo "DebloatList=\"" >> $DebloatListFile
-	while read i
-	do
-		echo $i >> $DebloatListFile
-	done < $TMPDIR/tmp_config
-	echo "\"" >> $DebloatListFile
-	rm $TMPDIR/tmp_config
-}
-
-example_config(){
-	cp $MODPATH/sDebloater_example $LogFolder/
-	if [ -f "$LogFolder"/sDebloater_example ]
-	then
-		echo ""
-		echo " Example configuration file saved as :" | tee -a $LogFile
-		echo "  "$LogFolder/sDebloater_example | tee -a $LogFile
-	fi
-	echo "" | tee -a $LogFile
-}
-
-
 # Log file
 LogFile=$LogFolder/SystemlessDebloater.log
-PrintLine="Magisk Module: Systemless Debloater $MyVersion"
-echo "$PrintLine log file." > $LogFile
+echo "Magisk Module: Systemless Debloater $MyVersion log file." > $LogFile
 echo 'Copyright (c) zgfg @ xda, 2020-' >> $LogFile
-echo 'Improvements by ipdev @ xda in progress' >> $LogFile
+echo 'Config file improvements provided by ipdev @ xda (in progress)' >> $LogFile
 echo "Installation time: $(date +%c)" >> $LogFile
 echo '' >> $LogFile
 
@@ -96,11 +51,8 @@ if [ ! -z "$Prop" ] && [ "$Prop" ]
 then
 	PrintLine=$PrintLine" ($Prop)"
 fi
-echo "$PrintLine"
-echo "$PrintLine" >> $LogFile
-PrintLine=$(magisk -c)
-echo "$PrintLine"
-echo "$PrintLine" >> $LogFile
+echo "$PrintLine" | tee -a $LogFile
+echo $(magisk -c) | tee -a $LogFile
 echo '' >> $LogFile
 
 
@@ -126,45 +78,61 @@ MultiDebloat="true"
 # Simple example for DebloatList var for the input file SystemlessDebloaterList.sh:
 #DebloatList="EasterEgg CatchLog Traceur wps_lite"
 
-# Input file with a list of app names for debloating
-DebloatListFile=$LogFolder/SystemlessDebloaterList.sh
-PrintLine="Input debloat list file: $DebloatListFile"												 					  
-echo "$PrintLine"
-echo "$PrintLine" >> $LogFile
-echo '' >> $LogFile
 
-# Check if the input list file exists
-if [ -f $DebloatListFile ]
+# Input and config files
+InputFile=$LogFolder/SystemlessDebloaterList.sh
+ConfigFile=$LogFolder/SystemlessDebloater.cfg
+ExampleConfigFile=$MODPATH/SystemlessDebloater.cfg
+
+# Source the old input file
+if [ -f "$InputFile" ]
 then
-	# Source the input file
-	. $DebloatListFile
-else
-	# Log error
-	PrintLine='Input file not found, creating a template file!'																					   
-	echo "$PrintLine"
-	echo "$PrintLine" >> $LogFile
-	echo "# Input debloat list $DebloatListFile for Magisk Module Systemless Debloater $MyVersion" > $DebloatListFile
-	echo '# Before debloating the apps, from Settings/Applications, Uninstall (updates) and Clear Data for them!' >> $DebloatListFile
-	echo "# Systemless Debloater log: $LogFile" >> $DebloatListFile
-	echo '# Copyright (c) zgfg @ xda, 2020-' >> $DebloatListFile
-	echo ' ' >> $DebloatListFile
-	echo '# Define a list of Stock apps for debloating:' >> $DebloatListFile
-	echo 'DebloatList=""' >> $DebloatListFile
-	echo ' ' >> $DebloatListFile
-	echo '# MIUI Example (commented out):' >> $DebloatListFile	
-	echo '# DebloatList="AnalyticsCore AntHalService BasicDreams ' >> $DebloatListFile 
-	echo '# BookmarkProvider CatchLog Chrome CneApp EasterEgg ' >> $DebloatListFile
-	echo '# facebook-appmanager facebook-installer facebook-services ' >> $DebloatListFile
-	echo '# FileExplorer_old GlobalFashiongallery GlobalMinusScreen ' >> $DebloatListFile 
-	echo '# Gmail2 GoogleFeedback GooglePartnerSetup HybridAccessory ' >> $DebloatListFile 
-	echo '# HybridPlatform IdMipay InMipay Joyose MiBrowserGlobal ' >> $DebloatListFile
-	echo '# MiBrowserGlobalVendor MiCreditInStub MiDrop ' >> $DebloatListFile
-	echo '# MiLinkService2 MiPicks MiPlayClient MiRcs MiRecycle ' >> $DebloatListFile
-	echo '# MiService MiuiBrowserGlobal MiuiBugReport MiuiDaemon ' >> $DebloatListFile
-	echo '# MSA-Global Netflix_activation PartnerBookmarksProvider ' >> $DebloatListFile
-	echo '# PaymentService PhotoTable Stk TouchAssistant Traceur ' >> $DebloatListFile
-	echo '# Turbo uceShimService Velvet VsimCore wps_lite YellowPage ' >> $DebloatListFile
-	echo '# Zman"' >> $DebloatListFile
+	echo 'Input source file: '$InputFile | tee -a $LogFile
+	. $InputFile
+fi
+
+# Function processing the config file
+# toDo
+convert_config_file(){
+	TmpConfigFile=$TMPDIR/tmp_config
+	sed -e '/^#/d' -e 's/#.*//g' -e 's/\"//g' -e 's/[ \t ]//g' -e '/^\s*$/d' $ConfigFile > $TmpConfigFile
+
+	if grep -q 'VerboseLog' $TmpConfigFile
+	then
+		$VerboseLog="true"
+	fi
+
+	if grep -q 'MultiDebloat' $TmpConfigFile
+	then
+		$MultiDebloat="true"
+	fi
+
+	DebloatList=""
+	while read AppName
+	do
+		DebloatList="$DebloatList$AppName"$'\n'
+	done < $TmpConfigFile
+	
+	rm $TmpConfigFile
+}
+
+# Check for the config file
+if [ -f "$ConfigFile" ]
+then
+	# Read the config file
+	echo 'Input config file: '$ConfigFile | tee -a $LogFile
+	convert_config_file
+	rm $ExampleConfigFile
+elif [ -f "$ExampleConfigFile" ]
+then
+	# Create the config file
+	cp $ExampleConfigFile $ConfigFile
+	echo '## My list of stock apps for debloating:' >> $ConfigFile
+	for AppName in $DebloatList
+	do
+		echo $AppName >> $ConfigFile
+	done
+	echo 'Config file created: '$ConfigFile | tee -a $LogFile
 fi
 
 echo "Verbose logging: $VerboseLog" >> $LogFile
@@ -468,21 +436,15 @@ do
 	if [ -z "$AppFound" ]
 	then
 		# Log app name if not found
-		PrintLine="$AppName --- app not found!"
-		echo "$PrintLine"
-		echo "$PrintLine" >> $LogFile
+		echo "$AppName --- app not found!" | tee -a $LogFile
 	fi
 done
 echo '' >> $LogFile
 
 if [ -z "$REPLACE" ]
 then
-	PrintLine="No app for debloating found!"
-	echo "$PrintLine"
-	echo "$PrintLine" >> $LogFile
-	PrintLine='Before debloating the apps, from Settings/Applications, Uninstall (updates) and Clear Data for them!'
-	echo "$PrintLine"
-	echo "$PrintLine" >> $LogFile
+	echo 'No app for debloating found!' | tee -a $LogFile
+	echo 'Make sure to uninstall updates and clear data for apps you want to debloat!' | tee -a $LogFile
 	echo '' >> $LogFile
 fi
 
@@ -515,14 +477,6 @@ then
 	echo "Stock apps:"$'\n'"$StockAppList" >> $LogFile
 	echo "Stock packages: $PackageInfoList" >> $LogFile
 fi
-
-
-# Cleanup
-
-## Remove temporary and unnecessary files if they still exist.
-[ -f "$TMPDIR"/tmp_config ] && rm $TMPDIR/tmp_config
-[ -f "$TMPDIR"/sDebloater_list.sh ] && rm $TMPDIR/sDebloater_list.sh
-[ -f "$MODPATH"/sDebloater_example ] && rm $MODPATH/sDebloater_example
 
 
 # Note for the log file
