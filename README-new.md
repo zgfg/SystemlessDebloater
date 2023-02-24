@@ -1,6 +1,6 @@
-# Systemless Debloater
+## Systemless Debloater
 
-#### Attention 
+## Attention 
 Since the version v1.5.1, Systemless Debloater module supports a new SystemlessDebloater.cfg config file. Update will create the new config file and transfer your DebloatList. Please delete then your old SystemlessDebloaterList.sh input file and read and use the new config file instead
 
 ### Description
