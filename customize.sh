@@ -99,33 +99,29 @@ then
 	echo '' >> $LogFile
 fi
 
-# Function for processing the config file
-proccess_config_file(){
+# Check for the config file
+if [ -f "$ConfigFile" ]
+then
+	echo 'Input config file: '$ConfigFile | tee -a $LogFile
+	echo '' >> $LogFile
+
+	# Clean the config file format and save to a temporary file
 	TmpConfigFile=$MODPATH/TmpSystemlessDebloater.cfg
 	sed -e '/^#/d' -e 's/#.*//g' -e 's/\"//g' -e 's/[ \t ]//g' -e '/^\s*$/d' $ConfigFile > $TmpConfigFile
 
+	# Read DebloatList
 	DebloatList=$'\n'
 	while read AppName
 	do
 		DebloatList="$DebloatList$AppName"$'\n'
 	done < $TmpConfigFile
 	
+	# Delete the temprary file
 	rm -f $TmpConfigFile
-}
-
-# Check for the config file
-if [ -f "$ConfigFile" ]
-then
-	# Proccess the config file
-	echo 'Input config file: '$ConfigFile | tee -a $LogFile
-	echo '' >> $LogFile
-
-	proccess_config_file
 else
 	# Create the config file
 	cp $ExampleConfigFile $ConfigFile
 
-	
 	if [ ! -z "$DebloatList" ]	
 	then
 		echo '## My list of stock apps for debloating:' >> $ConfigFile
