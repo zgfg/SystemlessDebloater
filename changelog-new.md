@@ -1,10 +1,10 @@
 #### v1.5.1 
 
-Support for the new SystemlessDebloater.cfg config file. Update will create the new config file and transfer your DebloatList. Please delete then your old SystemlessDebloaterList.sh input file and read and use the new config file
+Support for a new SystemlessDebloater.cfg config file. Update will create the new config file and transfer your DebloatList. Please delete then your old SystemlessDebloaterList.sh input file and read and use the new config file instead
 
 #### v1.5.0 
 
-Automatically search through packages to find SAR mount points
+Automatically search through installed packages to find all your SAR mount points
 
 #### v1.4.9 
 
