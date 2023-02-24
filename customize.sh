@@ -104,7 +104,7 @@ proccess_config_file(){
 	TmpConfigFile=$MODPATH/TmpSystemlessDebloater.cfg
 	sed -e '/^#/d' -e 's/#.*//g' -e 's/\"//g' -e 's/[ \t ]//g' -e '/^\s*$/d' $ConfigFile > $TmpConfigFile
 
-	DebloatList=""
+	DebloatList=$'\n'
 	while read AppName
 	do
 		DebloatList="$DebloatList$AppName"$'\n'
