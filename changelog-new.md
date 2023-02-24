@@ -1,8 +1,6 @@
 #### v1.5.1 
 
-Support for the new SystemlessDebloater.cfg config file thanks to ipdev @ xda
-Update will create the new config file and transfer your DebloatList from your old SystemlessDebloaterList.sh
-Please delete your old SystemlessDebloaterList.sh file and use the new config file for future
+Support for the new SystemlessDebloater.cfg config file. Update will create the new config file and transfer your DebloatList. Please delete then your old SystemlessDebloaterList.sh input file and read and use the new config file
 
 #### v1.5.0 
 
