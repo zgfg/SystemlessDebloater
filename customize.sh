@@ -2,7 +2,7 @@
 
 # Magisk Module: Systemless Debloater v1.5.1
 # Copyright (c) zgfg @ xda, 2020-
-# Config file improvements provided by ipdev @ xda (in progress)
+# Config file improvements provided by ipdev @ xda
 # XDA thread: https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083
 # GitHub source: https://github.com/zgfg/SystemlessDebloater
 
@@ -29,7 +29,7 @@ MyVersion=v1.5.1
 LogFile=$LogFolder/SystemlessDebloater.log
 echo "Magisk Module: Systemless Debloater $MyVersion log file." > $LogFile
 echo 'Copyright (c) zgfg @ xda, 2020-' >> $LogFile
-echo 'Config file improvements provided by ipdev @ xda (in progress)' >> $LogFile
+echo 'Config file improvements provided by ipdev @ xda' >> $LogFile
 echo "Installation time: $(date +%c)" >> $LogFile
 echo '' >> $LogFile
 
@@ -57,11 +57,11 @@ echo '' >> $LogFile
 
 
 # Default SAR mount-points (SAR partitions to search for debloating)
-#SarMountPointList="/system product /vendor /system_ext /india /my_bigball"  #toDo
+#SarMountPointList="/system product /vendor /system_ext /india /my_bigball"
 SarMountPointList=""
 
 # Invalid paths for (systemless) debloating
-#InvalidMountPointList="/data /apex /framework"  #toDo
+#InvalidMountPointList="/data /apex /framework"
 InvalidMountPointList="/data /framework"
 
 # Default/empty list of app names for debloating and debloated app names
@@ -84,28 +84,25 @@ InputFile=$LogFolder/SystemlessDebloaterList.sh
 ConfigFile=$LogFolder/SystemlessDebloater.cfg
 ExampleConfigFile=$MODPATH/SystemlessDebloater.cfg
 
-# Source the old input file
+# Check for the old input file
 if [ -f "$InputFile" ]
 then
+	# Source the old input file
 	echo 'Input source file: '$InputFile | tee -a $LogFile
 	. $InputFile
+
+	if [ ! -f "$ConfigFile" ]
+	then
+		echo 'Please delete your old '$InputFile | tee -a $LogFile
+	fi
+
+	echo '' >> $LogFile
 fi
 
-# Function processing the config file
-# toDo
-convert_config_file(){
-	TmpConfigFile=$TMPDIR/tmp_config
+# Function for processing the config file
+proccess_config_file(){
+	TmpConfigFile=$MODPATH/TmpSystemlessDebloater.cfg
 	sed -e '/^#/d' -e 's/#.*//g' -e 's/\"//g' -e 's/[ \t ]//g' -e '/^\s*$/d' $ConfigFile > $TmpConfigFile
-
-	if grep -q 'VerboseLog' $TmpConfigFile
-	then
-		$VerboseLog="true"
-	fi
-
-	if grep -q 'MultiDebloat' $TmpConfigFile
-	then
-		$MultiDebloat="true"
-	fi
 
 	DebloatList=""
 	while read AppName
@@ -113,27 +110,37 @@ convert_config_file(){
 		DebloatList="$DebloatList$AppName"$'\n'
 	done < $TmpConfigFile
 	
-	rm $TmpConfigFile
+	rm -f $TmpConfigFile
 }
 
 # Check for the config file
 if [ -f "$ConfigFile" ]
 then
-	# Read the config file
+	# Proccess the config file
 	echo 'Input config file: '$ConfigFile | tee -a $LogFile
-	convert_config_file
-	rm $ExampleConfigFile
-elif [ -f "$ExampleConfigFile" ]
-then
+	echo '' >> $LogFile
+
+	proccess_config_file
+else
 	# Create the config file
 	cp $ExampleConfigFile $ConfigFile
-	echo '## My list of stock apps for debloating:' >> $ConfigFile
-	for AppName in $DebloatList
-	do
-		echo $AppName >> $ConfigFile
-	done
-	echo 'Config file created: '$ConfigFile | tee -a $LogFile
+
+	
+	if [ ! -z "$DebloatList" ]	
+	then
+		echo '## My list of stock apps for debloating:' >> $ConfigFile
+	
+		# Transfer DebloatList to the new config file
+		for AppName in $DebloatList
+		do
+			echo $AppName >> $ConfigFile
+		done
+	fi
+
+	echo 'New config file created: '$ConfigFile | tee -a $LogFile
+	echo '' >> $LogFile
 fi
+rm -f $ExampleConfigFile
 
 echo "Verbose logging: $VerboseLog" >> $LogFile
 echo "Multiple search/debloat: $MultiDebloat" >> $LogFile
@@ -303,7 +310,7 @@ then
 	echo 'echo "Execution time: $(date +%c)" > $ServiceLogFile' >> $ServiceScript
 	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript
 else
-	echo 'rm $ServiceLogFile' >> $ServiceScript
+	echo 'rm -f $ServiceLogFile' >> $ServiceScript
 fi
 echo '' >> $ServiceScript
 
