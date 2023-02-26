@@ -115,17 +115,17 @@ then
 	do
 		DebloatList="$DebloatList$AppName"$'\n'
 	done < $TmpConfigFile
-	
+
 	# Delete the temprary file
 	rm -f $TmpConfigFile
 else
 	# Create the config file
 	cp $ExampleConfigFile $ConfigFile
 
-	if [ ! -z "$DebloatList" ]	
+	if [ ! -z "$DebloatList" ]
 	then
 		echo '## My list of stock apps for debloating:' >> $ConfigFile
-	
+
 		# Transfer DebloatList to the new config file
 		for AppName in $DebloatList
 		do
