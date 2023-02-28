@@ -6,7 +6,7 @@ Select and systemlessly debloat preinstalled system apps. Supporting up to Syste
 [OP instructions at XDA](https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083)
 
 ### Coffee
-If this module is useful for you, please support development by donating a [coffe](https://www.paypal.me/ipenzar)
+If this module is useful for you, please support development by donating a [coffee](https://www.paypal.me/ipenzar)
 
 #### Source
 
