@@ -1,5 +1,5 @@
-### Coffee
-If the module is useful, you could support development by donating a [coffee](https://www.paypal.me/ipenzar)
+#### Coffee
+If the module is useful, you may support development by donating a [coffee](https://www.paypal.me/ipenzar)
 
 #### v1.5.1
 
