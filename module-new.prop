@@ -1,8 +1,0 @@
-id=SystemlessDebloater
-name=Systemless Debloater
-version=1.5.1
-versionCode=150
-author=zgfg @ xda
-description=Select and debloat preinstalled system apps. Supported up to SAR, Dynamic partitions and A13. Module must be installed through Magisk app, not TWRP - see OP instructions in the XDA thread.
-support=https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083
-updateJson=https://raw.githubusercontent.com/zgfg/SystemlessDebloater/main/update-new.json
