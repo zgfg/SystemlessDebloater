@@ -1,3 +1,6 @@
+### Coffee
+If the module is useful, you could support development by donating a [coffee](https://www.paypal.me/ipenzar)
+
 #### v1.5.1
 
 Support for a new SystemlessDebloater.cfg config file. Update will create the new config file and transfer your DebloatList. Please delete then your old SystemlessDebloaterList.sh input file and read and use the new config file instead
