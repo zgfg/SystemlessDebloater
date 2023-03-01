@@ -31,7 +31,7 @@ Support for module's Update in **Magisk v20.4+**
 
 #### v1.4.4
 
-Shortened Github repo name to align with module's id
+Shortened **GitHub** repo name to align with module's id
 
 #### v1.4.3
 
