@@ -4,7 +4,7 @@
 Since the version **v1.5.1**, `SystemlessDebloater` module supports a new `SystemlessDebloater.cfg` config file. Update will create the **new config file** and transfer your old `DebloatList`. Please delete then your old `SystemlessDebloaterList.sh` input file and read and use the new config file instead
 
 ### Description
-Select and systemlessly debloat preinstalled system apps. Supporting up to **System As Root (SAR)**, **Dynamic partitions** and **Android 13**. Module must be installed through **Magisk app**, not TWRP - please read:
+Select and systemlessly debloat preinstalled system apps. Supporting up to **System As Root (SAR)**, **Dynamic partitions** and **Android 13**. Module must be installed through **Magisk app**, not TWRP. Please read:
 
 - [OP instructions](https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083) at XDA
 - [Wiki pages](https://github.com/mModule/guide_sDebloater/wiki/ConfigScript) by [ipdev](https://github.com/ipdev99/) @ XDA with instructions for `SystemlessDebloater.cfg`
