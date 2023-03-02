@@ -3,7 +3,7 @@
 # Magisk Module: Systemless Debloater v1.5.1
 # Copyright (c) zgfg @ xda, 2020-
 # Config file improvements provided by ipdev @ xda
-# XDA thread: https://forum.xda-developers.com/mi-9t/how-to/magisk-module-systemless-debloater-t4180083
+# XDA thread: https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083
 # GitHub source: https://github.com/zgfg/SystemlessDebloater
 
 if [ -z $BOOTMODE ] || [ "$BOOTMODE" != "true" ]
