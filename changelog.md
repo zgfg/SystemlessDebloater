@@ -1,5 +1,5 @@
 #### Coffee
-If the module is useful, you may support development by donating a [coffee](https://www.paypal.me/ipenzar)
+If the module is useful, you may support development by donating a [coffee](https://zgfg.github.io/PayPal.html)
 
 #### v1.5.1
 
