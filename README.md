@@ -11,7 +11,7 @@ Select and systemlessly debloat preinstalled system apps. Supporting up to **Sys
 - His [Examples](https://github.com/mModule/guide_sDebloater/wiki/CommunityList) of apps that can be debloated (**Android**, **Google**, **Oppo**, **Samsung**, **Xiaomi**, **LineageOS**)
 
 ### Coffee
-If this module is useful for you, please support development by donating a [coffee](https://www.paypal.me/ipenzar)
+If this module is useful for you, please support development by donating a [coffee](https://zgfg.github.io/PayPal.html)
 
 #### Source
 
