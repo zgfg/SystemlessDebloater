@@ -482,7 +482,7 @@ echo '' >> $LogFile
 # Debloat by mounting in servise.sh
 for MountApk in $MountList
 do
-	PrintLine='$MountBind $DummyApk '"$MountApk"
+	PrintLine='$MountBind $DummyApk '"$MountApk"' >> $ServiceLogFile 2>&1'
 	echo "$PrintLine" >> $ServiceScript
 done
 
