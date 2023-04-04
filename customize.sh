@@ -350,7 +350,7 @@ do
 
 	#Search through previously REPLACEd Stock apps
 	SearchName=/"$AppName"/.replace
-	SearchList=$(echo "" | grep "$SearchName$")
+	SearchList=$(echo "$ReplacedAppList" | grep "$SearchName$")
 	for FilePath in $SearchList
 	do
 		# Break if app already found
