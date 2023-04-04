@@ -34,6 +34,11 @@ echo "Installation time: $(date +%c)" >> $LogFile
 echo '' >> $LogFile
 
 # Log system info
+Prop=$(getprop ro.product.cpu.abi)
+if [ ! -z "$Prop" ] && [ "$Prop" ]
+then
+	echo "$Prop" | tee -a $LogFile
+fi
 Prop=$(getprop ro.build.version.release)
 PrintLine='Android '$Prop
 Prop=$(getprop ro.build.system_root_image)
@@ -373,7 +378,7 @@ do
 			# Log the full path
 			echo "found: $FilePath" >> $LogFile
 
-			# toDo: Quick fix for Magisk Canary v25211, no more .replace file in the REPLACEd folder) - next time cannot be found in ReplacedAppList, hence forcing all debloating/mounting through ServiceScript
+			# toDo: Quick fix for Magisk Canary v25211, no more .replace file in the REPLACEd folders and next time apps cannot be found in ReplacedAppList, hence forcing all debloating/mounting through ServiceScript
 			if true || [ -z $(echo "$FolderPath" | grep '^/system/') ]
 			then
 				# Append to MountList with appended AppName
@@ -423,7 +428,7 @@ do
 			# Log the full path and package name
 			echo "found: $FilePath $PackageName" >> $LogFile
 
-			# toDo: Quick fix for Magisk Canary v25211, no more .replace file in the REPLACEd folder) - next time cannot be found in ReplacedAppList, hence forcing all debloating/mounting through ServiceScript
+			# toDo: Quick fix for Magisk Canary v25211, no more .replace file in the REPLACEd folders and next time apps cannot be found in ReplacedAppList, hence forcing all debloating/mounting through ServiceScript
 			if true || [ -z $(echo "$FolderPath" | grep '^/system/') ]
 			then
 				# Append to MountList
