@@ -285,7 +285,7 @@ echo "Previously REPLACEd Stock apps:"$'\n'"$ReplacedAppList" >> $LogFile
 
 # Prepare service.sh file to debloat Stock but not System apps
 ServiceScript="$MODPATH/service.sh"
-echo "ServiceScript: $ServiceScript" >> $LogFile
+echo "ServiceScript:"$'\n'"$ServiceScript" >> $LogFile
 echo '' >> $LogFile
 
 echo '#!/system/bin/sh' > $ServiceScript
@@ -373,7 +373,7 @@ do
 			# Log the full path
 			echo "found: $FilePath" >> $LogFile
 
-			# toDo: Testing for Magisk Canary v25211
+			# toDo: Quick fix for Magisk Canary v25211, no more .replace file in the REPLACEd folder) - next time cannot be found in ReplacedAppList, hence forcing all debloating/mounting through ServiceScript
 			if true || [ -z $(echo "$FolderPath" | grep '^/system/') ]
 			then
 				# Append to MountList with appended AppName
@@ -423,7 +423,7 @@ do
 			# Log the full path and package name
 			echo "found: $FilePath $PackageName" >> $LogFile
 
-			# toDo: Testing for Magisk Canary v25211
+			# toDo: Quick fix for Magisk Canary v25211, no more .replace file in the REPLACEd folder) - next time cannot be found in ReplacedAppList, hence forcing all debloating/mounting through ServiceScript
 			if true || [ -z $(echo "$FolderPath" | grep '^/system/') ]
 			then
 				# Append to MountList
