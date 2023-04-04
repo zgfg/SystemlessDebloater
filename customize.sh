@@ -30,7 +30,7 @@ LogFile=$LogFolder/SystemlessDebloater.log
 echo "Magisk Module: Systemless Debloater $MyVersion log file." > $LogFile
 echo 'Copyright (c) zgfg @ xda, 2020-' >> $LogFile
 echo 'Config file improvements provided by ipdev @ xda' >> $LogFile
-echo "Installation time: $(date +%c)" >> $LogFile
+echo "Installation start time: $(date +%c)" >> $LogFile
 echo '' >> $LogFile
 
 # Log system info
@@ -311,7 +311,7 @@ echo '' >> $ServiceScript
 
 if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
 then
-	echo 'echo "Execution time: $(date +%c)" > $ServiceLogFile' >> $ServiceScript
+	echo 'echo "Run start time: $(date +%c)" > $ServiceLogFile' >> $ServiceScript
 	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript
 else
 	echo 'rm -f $ServiceLogFile' >> $ServiceScript
@@ -322,10 +322,10 @@ echo '' >> $ServiceScript
 MODDIR=$(echo "$MODPATH" | sed "s!/modules_update/!/modules/!")
 echo "MODDIR=$MODDIR" >> $ServiceScript
 
-
 if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
 then
 	echo 'echo "MODDIR: $MODDIR" >> $ServiceLogFile' >> $ServiceScript
+	echo "echo ServiceScript: $ServiceScript"' >> $ServiceLogFile' >> $ServiceScript
 	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript
 	echo '' >> $ServiceScript
 fi
@@ -479,12 +479,20 @@ MountList=$(echo "$MountList" | sort -bu )
 echo 'MountList="'"$MountList"$'\n"' >> $LogFile
 echo '' >> $LogFile
 
-# Debloat by mounting in servise.sh
-for MountApk in $MountList
-do
-	PrintLine='$MountBind $DummyApk '"$MountApk"' >> $ServiceLogFile 2>&1'
-	echo "$PrintLine" >> $ServiceScript
-done
+# Debloat by mounting through servise.sh
+echo 'MountList="'"$MountList"$'\n"' >> $ServiceScript
+echo '' >> $ServiceScript
+echo 'for MountApk in $MountList' >> $ServiceScript
+echo 'do' >> $ServiceScript
+PrintLine='	$MountBind $DummyApk $MountApk >> $ServiceLogFile 2>&1'
+echo "$PrintLine" >> $ServiceScript
+echo 'done' >> $ServiceScript
+echo '' >> $ServiceScript
+
+if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
+then
+	echo 'echo "Run end time : $(date +%c)" >> $ServiceLogFile' >> $ServiceScript
+fi
 
 
 # Log Stock apps and packages
@@ -492,8 +500,10 @@ if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
 then
 	echo "Stock apps:"$'\n'"$StockAppList" >> $LogFile
 	echo "Stock packages: $PackageInfoList" >> $LogFile
+echo '' >> $LogFile
 fi
 
 
-# Note for the log file
+# Log installation end time and note for the log file
+echo "Installation end time: $(date +%c)" >> $LogFile
 echo "Systemless Debloater log: $LogFile"
