@@ -285,10 +285,13 @@ done
 #ReplacedAppList=$(echo "$ReplacedAppList" | sort -bu )
 
 # Log ReplacedAppList
-echo "Previously REPLACEd Stock apps:"$'\n'"$ReplacedAppList" >> $LogFile
+if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
+then
+	echo "Previously REPLACEd Stock apps:"$'\n'"$ReplacedAppList" >> $LogFile
+fi
 
 
-# Prepare service.sh file to debloat Stock but not System apps
+# Prepare service.sh file to debloat Stock apps
 ServiceScript="$MODPATH/service.sh"
 echo "ServiceScript:"$'\n'"$ServiceScript" >> $LogFile
 echo '' >> $LogFile
@@ -465,8 +468,11 @@ echo '' >> $LogFile
 
 # Sort and log REPLACE list
 REPLACE=$(echo "$REPLACE" | sort -bu )
-echo 'REPLACE="'"$REPLACE"$'\n"' >> $LogFile
+if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
+then
+	echo 'REPLACE="'"$REPLACE"$'\n"' >> $LogFile
 echo '' >> $LogFile
+fi
 
 # Sort and log MountList
 MountList=$(echo "$MountList" | sort -bu )
