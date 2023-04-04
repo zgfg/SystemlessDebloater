@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-# Magisk Module: Systemless Debloater v1.5.1
+# Magisk Module: Systemless Debloater v1.5.2
 # Copyright (c) zgfg @ xda, 2020-
 # Config file improvements provided by ipdev @ xda
 # XDA thread: https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083
@@ -22,7 +22,7 @@ LogFolder=/storage/emulated/0/Download
 # LogFolder=/sdcard/Download
 
 # Module's version
-MyVersion=v1.5.1
+MyVersion=v1.5.2
 
 
 # Log file
@@ -264,7 +264,7 @@ do
 done
 
 
-#Search for previously debloated Stock apps
+#Search for previously REPLACEd Stock apps
 ReplacedAppList=""
 for SarMountPoint in $SarMountPointList
 do
@@ -280,7 +280,7 @@ done
 #ReplacedAppList=$(echo "$ReplacedAppList" | sort -bu )
 
 # Log ReplacedAppList
-echo "Previously debloated Stock apps:"$'\n'"$ReplacedAppList" >> $LogFile
+echo "Previously REPLACEd Stock apps:"$'\n'"$ReplacedAppList" >> $LogFile
 
 
 # Prepare service.sh file to debloat Stock but not System apps
@@ -348,9 +348,9 @@ for AppName in $DebloatList
 do
 	AppFound=""
 
-	#Search through previously debloated Stock apps
+	#Search through previously REPLACEd Stock apps
 	SearchName=/"$AppName"/.replace
-	SearchList=$(echo "$ReplacedAppList" | grep "$SearchName$")
+	SearchList=$(echo "" | grep "$SearchName$")
 	for FilePath in $SearchList
 	do
 		# Break if app already found
@@ -366,14 +366,15 @@ do
 		FileName=${FilePath##*/}
 		FolderPath=$(echo "$FilePath" | sed "s,/$FileName$,,")
 
-		if [ ! -z "FolderPath" ]
+		if [ ! -z "$FolderPath" ]
 		then
 			AppFound="true"
 
 			# Log the full path
 			echo "found: $FilePath" >> $LogFile
 
-			if [ -z $(echo "$FolderPath" | grep '^/system/') ]
+			# toDo: Testing for Magisk Canary v25211
+			if true || [ -z $(echo "$FolderPath" | grep '^/system/') ]
 			then
 				# Append to MountList with appended AppName
 				MountList="$MountList$FolderPath/$AppName.apk"$'\n'
@@ -415,14 +416,15 @@ do
 		FileName=${FilePath##*/}
 		FolderPath=$(echo "$FilePath" | sed "s,/$FileName$,,")
 
-		if [ ! -z "FolderPath" ]
+		if [ ! -z "$FolderPath" ]
 		then
 			AppFound="true"
 
 			# Log the full path and package name
 			echo "found: $FilePath $PackageName" >> $LogFile
 
-			if [ -z $(echo "$FolderPath" | grep '^/system/') ]
+			# toDo: Testing for Magisk Canary v25211
+			if true || [ -z $(echo "$FolderPath" | grep '^/system/') ]
 			then
 				# Append to MountList
 				MountList="$MountList$FilePath"$'\n'
@@ -444,7 +446,7 @@ do
 done
 echo '' >> $LogFile
 
-if [ -z "$REPLACE" ]
+if [ -z "$REPLACE" ] && [ -z "$MountList"
 then
 	echo 'No app for debloating found!' | tee -a $LogFile
 	echo 'Make sure to uninstall updates and clear data for apps you want to debloat!' | tee -a $LogFile
