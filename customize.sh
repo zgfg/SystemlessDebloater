@@ -56,6 +56,9 @@ echo $(magisk -c) | tee -a $LogFile
 echo '' >> $LogFile
 
 
+# Verbose logging
+VerboseLog="true"
+
 # Default SAR mount-points (SAR partitions to search for debloating)
 #SarMountPointList="/system product /vendor /system_ext /india /my_bigball"
 SarMountPointList=""
@@ -68,15 +71,16 @@ InvalidMountPointList="/data /framework"
 DebloatList=""
 DebloatedList=""
 
-# Verbose logging
-VerboseLog="true"
+# Simple example for DebloatList var for the input file SystemlessDebloaterList.sh:
+#DebloatList="EasterEgg CatchLog Traceur wps_lite"
 
 # Searching for possible several instances of Stock apps for debloating
 MultiDebloat="true"
-
-
-# Simple example for DebloatList var for the input file SystemlessDebloaterList.sh:
-#DebloatList="EasterEgg CatchLog Traceur wps_lite"
+,
+# toDo: Quick fix for Canary v25211 and newer Magisk versions
+# No more .replace file in the REPLACEd folders and next time previously debloated apps cannot be found in ReplacedAppList
+# Hence, force all debloating by mounting through service.sh
+ForceMountList="true"
 
 
 # Input and config files
@@ -140,6 +144,7 @@ rm -f $ExampleConfigFile
 
 echo "Verbose logging: $VerboseLog" >> $LogFile
 echo "Multiple search/debloat: $MultiDebloat" >> $LogFile
+echo "Force mounting by service.sh: $ForceMountList" >> $LogFile
 echo '' >> $LogFile
 
 
@@ -302,12 +307,9 @@ do
 	for FilePath in $SearchList
 	do
 		# Break if app already found
-		if [ -z "$MultiDebloat" ] && [ "$MultiDebloat" = "true" ]
+		if [ "$AppFound" = "true" ] && [ "$MultiDebloat" != "true" ]
 		then
-			if [ ! -z "$AppFound" ]
-			then
-				break
-			fi
+e			break
 		fi
 
 		# Remove /filename from the end of the path
@@ -321,8 +323,7 @@ do
 			# Log the full path
 			echo "found: $FilePath" >> $LogFile
 
-			# toDo: Quick fix for Magisk Canary v25211, no more .replace file in the REPLACEd folders and next time apps cannot be found in ReplacedAppList, hence forcing all debloating/mounting through service.sh
-			if true || [ -z $(echo "$FolderPath" | grep '^/system/') ]
+			if [ "$ForceMountList" = "true" ] || [ -z $(echo "$FolderPath" | grep '^/system/') ]
 			then
 				# Append to MountList with appended AppName
 				MountList="$MountList$FolderPath/$AppName.apk"$'\n'
@@ -341,12 +342,10 @@ do
 	SearchList=$(echo "$StockAppList" | grep "$SearchName$")
 	for FilePath in $SearchList
 	do
-		if [ -z "$MultiDebloat" ] && [ "$MultiDebloatt" = "true" ]
+		# Break if app already found
+		if [ "$AppFound" = "true" ] && [ "$MultiDebloat" != "true" ]
 		then
-			if [ ! -z "$AppFound" ]
-			then
-				break
-			fi
+			break
 		fi
 
 		# Find the corresponding package
@@ -371,8 +370,7 @@ do
 			# Log the full path and package name
 			echo "found: $FilePath $PackageName" >> $LogFile
 
-			# toDo: Quick fix for Magisk Canary v25211, no more .replace file in the REPLACEd folders and next time apps cannot be found in ReplacedAppList, hence forcing all debloating/mounting through service.sh
-			if true || [ -z $(echo "$FolderPath" | grep '^/system/') ]
+			if [ "$ForceMountList" = "true" ] || [ -z $(echo "$FolderPath" | grep '^/system/') ]
 			then
 				# Append to MountList
 				MountList="$MountList$FilePath"$'\n'
@@ -394,7 +392,7 @@ do
 done
 echo '' >> $LogFile
 
-if [ -z "$REPLACE" ] && [ -z "$MountList"
+if [ -z "$REPLACE" ] && [ -z "$MountList"]
 then
 	echo 'No app for debloating found!' | tee -a $LogFile
 	echo 'Make sure to uninstall updates and clear data for apps you want to debloat!' | tee -a $LogFile
@@ -408,7 +406,7 @@ echo '' >> $LogFile
 
 # Sort and log REPLACE list
 REPLACE=$(echo "$REPLACE" | sort -bu )
-if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
+if [ "$ForceMountList" != "true" ]
 then
 	echo 'REPLACE="'"$REPLACE"$'\n"' >> $LogFile
 echo '' >> $LogFile
