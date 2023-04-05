@@ -12,18 +12,13 @@ then
 fi
 
 
-# Magisk Module Installer variable
-REPLACE=""
-
-# Module's folder
-LogFolder=/storage/emulated/0/Download
-
-# Alternative path to Internal memory
-# LogFolder=/sdcard/Download
-
 # Module's version
 MyVersion=v1.5.2
 
+# Download folder
+LogFolder=/storage/emulated/0/Download
+# Alternative path to Internal memory
+# LogFolder=/sdcard/Download
 
 # Log file
 LogFile=$LogFolder/SystemlessDebloater.log
@@ -291,64 +286,9 @@ then
 fi
 
 
-# Prepare service.sh file to debloat Stock apps
-ServiceScript="$MODPATH/service.sh"
-echo "ServiceScript:"$'\n'"$ServiceScript" >> $LogFile
-echo '' >> $LogFile
-
-echo '#!/system/bin/sh' > $ServiceScript
-echo '' >> $ServiceScript
-
-echo "# Magisk Module: Systemless Debloater $MyVersion" >> $ServiceScript
-echo '# Copyright (c) zgfg @ xda, 2020-' >> $ServiceScript
-echo "# Installation time: $(date +%c)" >> $ServiceScript
-echo '' >> $ServiceScript
-
-# Log file for service.sh
-echo 'ServiceLogFolder=/data/local/tmp' >> $ServiceScript
-echo 'ServiceLogFile=$ServiceLogFolder/SystemlessDebloater-service.log' >> $ServiceScript
-echo '' >> $ServiceScript
-
-if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
-then
-	echo 'echo "Run start time: $(date +%c)" > $ServiceLogFile' >> $ServiceScript
-	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript
-else
-	echo 'rm -f $ServiceLogFile' >> $ServiceScript
-fi
-echo '' >> $ServiceScript
-
-# Module's own folder
-MODDIR=$(echo "$MODPATH" | sed "s!/modules_update/!/modules/!")
-echo "MODDIR=$MODDIR" >> $ServiceScript
-
-if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
-then
-	echo 'echo "MODDIR: $MODDIR" >> $ServiceLogFile' >> $ServiceScript
-	echo "echo ServiceScript: $ServiceScript"' >> $ServiceLogFile' >> $ServiceScript
-	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript
-	echo '' >> $ServiceScript
-fi
-
-# Dummy apk used for debloating
-echo 'DummyApk=$MODDIR/dummy.apk' >> $ServiceScript
-echo 'touch $DummyApk' >> $ServiceScript
-echo '' >> $ServiceScript
-
-if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
-then
-	echo 'echo "DummyApk: $DummyApk" >> $ServiceLogFile' >> $ServiceScript
-	echo 'echo "" >> $ServiceLogFile' >> $ServiceScript
-	echo '' >> $ServiceScript
-fi
-
-# Mount and bind for debloating
-echo 'MountBind="mount -o bind"' >> $ServiceScript
-echo '' >> $ServiceScript
-
-# List of apps to debloat by mounting
+# List of apps to debloat by REPLACE and by mounting
+REPLACE=""
 MountList=""
-
 
 # Iterate through apps for debloating
 echo 'Debloating:' >> $LogFile
@@ -381,7 +321,7 @@ do
 			# Log the full path
 			echo "found: $FilePath" >> $LogFile
 
-			# toDo: Quick fix for Magisk Canary v25211, no more .replace file in the REPLACEd folders and next time apps cannot be found in ReplacedAppList, hence forcing all debloating/mounting through ServiceScript
+			# toDo: Quick fix for Magisk Canary v25211, no more .replace file in the REPLACEd folders and next time apps cannot be found in ReplacedAppList, hence forcing all debloating/mounting through service.sh
 			if true || [ -z $(echo "$FolderPath" | grep '^/system/') ]
 			then
 				# Append to MountList with appended AppName
@@ -431,7 +371,7 @@ do
 			# Log the full path and package name
 			echo "found: $FilePath $PackageName" >> $LogFile
 
-			# toDo: Quick fix for Magisk Canary v25211, no more .replace file in the REPLACEd folders and next time apps cannot be found in ReplacedAppList, hence forcing all debloating/mounting through ServiceScript
+			# toDo: Quick fix for Magisk Canary v25211, no more .replace file in the REPLACEd folders and next time apps cannot be found in ReplacedAppList, hence forcing all debloating/mounting through service.sh
 			if true || [ -z $(echo "$FolderPath" | grep '^/system/') ]
 			then
 				# Append to MountList
@@ -479,20 +419,14 @@ MountList=$(echo "$MountList" | sort -bu )
 echo 'MountList="'"$MountList"$'\n"' >> $LogFile
 echo '' >> $LogFile
 
-# Debloat by mounting through servise.sh
-echo 'MountList="'"$MountList"$'\n"' >> $ServiceScript
-echo '' >> $ServiceScript
-echo 'for MountApk in $MountList' >> $ServiceScript
-echo 'do' >> $ServiceScript
-PrintLine='	$MountBind $DummyApk $MountApk >> $ServiceLogFile 2>&1'
-echo "$PrintLine" >> $ServiceScript
-echo 'done' >> $ServiceScript
-echo '' >> $ServiceScript
+# Prepare for debloating/mounting through servise.sh and mountList.sh
+MountListFile="$MODPATH/mountList.sh"
+echo 'MountList="'"$MountList"$'\n"' >> $MountListFile
 
-if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
-then
-	echo 'echo "Run end time : $(date +%c)" >> $ServiceLogFile' >> $ServiceScript
-fi
+# Log the MountListFile path
+MountListFile=$(echo "$MountListFile" | sed "s!/modules_update/!/modules/!")
+echo "MountListFile:"$'\n'"$MountListFile" >> $LogFile
+echo '' >> $LogFile
 
 
 # Log Stock apps and packages
@@ -502,7 +436,6 @@ then
 	echo "Stock packages: $PackageInfoList" >> $LogFile
 echo '' >> $LogFile
 fi
-
 
 # Log installation end time and note for the log file
 echo "Installation end time: $(date +%c)" >> $LogFile
