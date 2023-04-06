@@ -81,7 +81,7 @@ DebloatedList=""
 # Searching for possible several instances of Stock apps for debloating
 MultiDebloat="true"
 
-# For Magisk v26, there is no more .replace file in the REPLACEd folders on the /system side
+# For Magisk v26, there is no more .replace file in REPLACEd folders on the /system side
 # Potential problems when reinstalling/updating the module, to find the previously REPLACEd stock apps
 # To avoid, force all debloating by mounting through service.sh
 ForceMountList="true"
@@ -286,16 +286,18 @@ do
 	fi
 done
 
-# For Magisk v26, there is no more .replace file in the REPLACEd folders on the /system side
+# For Magisk v26, there is no more .replace file in REPLACEd folders on the /system side
 # When reinstalling the module, search for previously REPLACEd stock apps also in the module's folder
 NewList=$(find "$ModFolder/system/" -type f -name "$DotReplace" 2> /dev/null)
 if [ ! -z "$NewList" ]
 then
 	for FilePath in $NewList
 	do
+		# Extract the corresponding /system path
 		FilePath=$(echo "$FilePath" | sed "s!^$ModFolder!!")
 		FolderPath=$(echo "$FilePath" | sed "s!$DotReplace$!!")
 
+		# Check if the corresponding /system folder exists
 		if [ -d $FolderPath ]
 		then
 			ReplacedAppList="$ReplacedAppList"$'\n'"$FilePath"
