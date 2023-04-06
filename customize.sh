@@ -15,6 +15,10 @@ fi
 # Module's version
 MyVersion=v1.5.2
 
+# Module's folder (upon the installation and reboot)
+ModFolder=$MODPATH
+ModFolder=$(echo "$MODPATH" | sed "s!/modules_update/!/modules/!")
+
 # Download folder
 LogFolder=/storage/emulated/0/Download
 # Alternative path to Internal memory
@@ -76,10 +80,10 @@ DebloatedList=""
 
 # Searching for possible several instances of Stock apps for debloating
 MultiDebloat="true"
-,
-# toDo: Quick fix for Canary v25211 and newer Magisk versions
-# No more .replace file in the REPLACEd folders and next time previously debloated apps cannot be found in ReplacedAppList
-# Hence, force all debloating by mounting through service.sh
+
+# For Magisk v26, there is no more .replace file in the REPLACEd folders on the /system side
+# Potential problems when reinstalling/updating the module, to find the previously REPLACEd stock apps
+# To avoid, force all debloating by mounting through service.sh
 ForceMountList="true"
 
 
@@ -269,25 +273,43 @@ do
 done
 
 
-#Search for previously REPLACEd Stock apps
+# Search for previously REPLACEd Stock apps
+DotReplace='.replace'
 ReplacedAppList=""
 for SarMountPoint in $SarMountPointList
 do
-	NewList=$(find "$SarMountPoint/" -type f -name ".replace" 2> /dev/null)
+	NewList=$(find "$SarMountPoint/" -type f -name "$DotReplace" 2> /dev/null)
 
 	if [ ! -z "$NewList" ]
 	then
-		ReplacedAppList="$ReplacedAppList$NewList"$'\n'
+		ReplacedAppList="$ReplacedAppList"$'\n'"$NewList"
 	fi
 done
 
+# For Magisk v26, there is no more .replace file in the REPLACEd folders on the /system side
+# When reinstalling the module, search for previously REPLACEd stock apps also in the module's folder
+NewList=$(find "$ModFolder/system/" -type f -name "$DotReplace" 2> /dev/null)
+if [ ! -z "$NewList" ]
+then
+	for FilePath in $NewList
+	do
+		FilePath=$(echo "$FilePath" | sed "s!^$ModFolder!!")
+		FolderPath=$(echo "$FilePath" | sed "s!$DotReplace$!!")
+
+		if [ -d $FolderPath ]
+		then
+			ReplacedAppList="$ReplacedAppList"$'\n'"$FilePath"
+		fi
+	done
+fi
+
 # Sort ReplacedAppList
-#ReplacedAppList=$(echo "$ReplacedAppList" | sort -bu )
+ReplacedAppList=$(echo "$ReplacedAppList" | sort -bu )
 
 # Log ReplacedAppList
 if [ ! -z "$VerboseLog" ] && [ "$VerboseLog" = "true" ]
 then
-	echo "Previously REPLACEd Stock apps:"$'\n'"$ReplacedAppList" >> $LogFile
+	echo "Previously REPLACEd Stock apps:$ReplacedAppList"$'\n' >> $LogFile
 fi
 
 
@@ -301,15 +323,15 @@ for AppName in $DebloatList
 do
 	AppFound=""
 
-	#Search through previously REPLACEd Stock apps
-	SearchName=/"$AppName"/.replace
+	# Search through previously REPLACEd Stock apps
+	SearchName="/$AppName/$DotReplace"
 	SearchList=$(echo "$ReplacedAppList" | grep "$SearchName$")
 	for FilePath in $SearchList
 	do
 		# Break if app already found
 		if [ "$AppFound" = "true" ] && [ "$MultiDebloat" != "true" ]
 		then
-e			break
+			break
 		fi
 
 		# Remove /filename from the end of the path
@@ -418,12 +440,11 @@ echo 'MountList="'"$MountList"$'\n"' >> $LogFile
 echo '' >> $LogFile
 
 # Prepare for debloating/mounting through servise.sh and mountList.sh
-MountListFile="$MODPATH/mountList.sh"
-echo 'MountList="'"$MountList"$'\n"' >> $MountListFile
+MountListFile='mountList.sh'
+echo 'MountList="'"$MountList"$'\n"' >> $MODPATH/$MountListFile
 
 # Log the MountListFile path
-MountListFile=$(echo "$MountListFile" | sed "s!/modules_update/!/modules/!")
-echo "MountListFile:"$'\n'"$MountListFile" >> $LogFile
+echo "MountListFile:"$'\n'"$ModFolder/$MountListFile" >> $LogFile
 echo '' >> $LogFile
 
 
