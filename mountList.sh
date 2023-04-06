@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-# Magisk Module: Systemless Debloater v1.5.2
+# Magisk Module: Systemless Debloater
 # Copyright (c) zgfg @ xda, 2020-
 
 
