@@ -1,6 +1,11 @@
 #### Coffee
 If the module is useful, you may support development by donating a [coffee](https://zgfg.github.io/PayPal.html)
 
+#### v1.5.2
+
+Adaptations for Magisk v26.
+If module does not find and debloat your previously debloated apps, please reboot and install the module again (by keeping your config file)
+
 #### v1.5.1
 
 Support for a new `SystemlessDebloater.cfg` config file. Update will create the **new config file** and transfer your `DebloatList`. Please delete then your old `SystemlessDebloaterList.sh` input file and read and use the new config file instead
