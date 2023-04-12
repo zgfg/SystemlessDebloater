@@ -6,7 +6,7 @@ Since the version **v1.5.1**, `SystemlessDebloater` module supports a new `Syste
 ### Description
 Select and systemlessly debloat preinstalled system apps. Supporting up to **System As Root (SAR)**, **Dynamic partitions** and **Android 13**. Module must be installed through **Magisk app**, not TWRP. Please read:
 
-<a href="https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083"> <img src="https://img.shields.io/badge/XDA-Systemless_Debloater-orange?logo=Bookstack&logoColor=yellow" alt="XDA - Systemless Debloater"></a> OP guide
+<a href="https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083"> <img src="https://img.shields.io/badge/XDA-Systemless_Debloater-orange?logo=BookStack&logoColor=yellow" alt="XDA - Systemless Debloater"></a> OP guide
 
 <a href="https://github.com/mModule/guide_sDebloater/wiki/ConfigScript"> <img src="https://img.shields.io/badge/Wiki-Config-orange?logo=Wikipedia&logoColor=yellow" alt="Wiki pages"></a> file instructions by [ipdev](https://github.com/ipdev99/) and his
 
