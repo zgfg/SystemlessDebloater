@@ -2,7 +2,7 @@
 
 ### Attention
 Since the version **v1.5.1**, `SystemlessDebloater` module supports a new `SystemlessDebloater.cfg` config file. Update will create the **new config file** and transfer your old `DebloatList`. Please delete then your old `SystemlessDebloaterList.sh` input file and read and use the new config file instead
-<p align="left">
+
 ### Description
 Select and systemlessly debloat preinstalled system apps. Supporting up to **System As Root (SAR)**, **Dynamic partitions** and **Android 13**. Module must be installed through **Magisk app**, not TWRP. Please read:
 <p align="left">
