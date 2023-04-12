@@ -32,6 +32,6 @@ Select and systemlessly debloat preinstalled system apps. Supporting up to **Sys
 <a href="https://zgfg.github.io/PayPal.html"> <img src="https://img.shields.io/badge/-Donate%20a%20coffee-FFDD00?logo=Buy-me-a-coffee&logoColor=black" alt="Donate a coffee"> </a> 
 </p>
 
-<a href="https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083"> <img src="https://img.shields.io/badge/Wiki-Examples-orange" alt="Examples"></a> OP guide
+<a href="https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083"> <img src="https://img.shields.io/badge/XDASystemless_Debloater-orange" alt="Examples"></a> OP guide
 
-<a href="https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083"> <img src="https://img.shields.io/badge/XDASystemless_Debloater-orange"alt="XDA - Systemless Debloater"> OP guide
+<a href="https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083"> <img src="https://img.shields.io/badge/XDASystemless_Debloater-orange" alt="XDA - Systemless Debloater"></a> OP guide
