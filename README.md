@@ -10,7 +10,7 @@ Select and systemlessly debloat preinstalled system apps. Supporting up to **Sys
 
 <a href="https://github.com/mModule/guide_sDebloater/wiki/ConfigScript"> <img src="https://img.shields.io/badge/Wiki-Config-orange" alt="Wiki pages"></a> file instructions by [ipdev](https://github.com/ipdev99/) and his
 
-<a href="https://github.com/mModule/guide_sDebloater/wiki/CommunityList"> <img src="https://img.shields.io/badge/Wiki-Examples-orange" alt="Examples"></a> for debloating **Android**, **Google**, **Oppo**, **Samsung**, **Xiaomi**, **LineageOS**
+<a href="https://github.com/mModule/guide_sDebloater/wiki/CommunityList"> <img src="https://img.shields.io/badge/Wiki-Examples-orange?logo=Buy-me-a-coffee&logoColor=black" alt="Examples"></a> for debloating **Android**, **Google**, **Oppo**, **Samsung**, **Xiaomi**, **LineageOS**
 
 #### Source
 
