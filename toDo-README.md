@@ -6,8 +6,8 @@ Since the version **v1.5.1**, `SystemlessDebloater` module supports a new `Syste
 ### Description
 Select and systemlessly debloat preinstalled system apps. Supporting up to **System As Root (SAR)**, **Dynamic partitions** and **Android 13**. Module must be installed through **Magisk app**, not TWRP. Please read:
 
-<a href="https://github.com/mModule/guide_sDebloater/wiki/ConfigScript"> <img src="https://img.shields.io/badge/Wiki-Config-orange" alt="Wiki pages"> file instructions
-<a href="https://github.com/mModule/guide_sDebloater/wiki/CommunityList"> <img src="https://img.shields.io/badge/Wiki-Examples-orange" alt="Examples"> for debloating **Android**, **Google**, **Oppo**, **Samsung**, **Xiaomi**, **LineageOS**
+<a href="https://github.com/mModule/guide_sDebloater/wiki/ConfigScript"> <img src="https://img.shields.io/badge/Wiki-Config-orange" alt="Wiki pages"></a> file instructions
+<a href="https://github.com/mModule/guide_sDebloater/wiki/CommunityList"> <img src="https://img.shields.io/badge/Wiki-Examples-orange" alt="Examples"></a> for debloating **Android**, **Google**, **Oppo**, **Samsung**, **Xiaomi**, **LineageOS**
 
 - [Wiki pages](https://github.com/mModule/guide_sDebloater/wiki/ConfigScript) by [ipdev](https://github.com/ipdev99/) @ XDA with instructions for `SystemlessDebloater.cfg`
 - His [Examples](https://github.com/mModule/guide_sDebloater/wiki/CommunityList) of apps that can be debloated (**Android**, **Google**, **Oppo**, **Samsung**, **Xiaomi**, **LineageOS**)
@@ -32,6 +32,6 @@ Select and systemlessly debloat preinstalled system apps. Supporting up to **Sys
 <a href="https://zgfg.github.io/PayPal.html"> <img src="https://img.shields.io/badge/-Donate%20a%20coffee-FFDD00?logo=Buy-me-a-coffee&logoColor=black" alt="Donate a coffee"> </a> 
 </p>
 
-<a href="https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083"> <img src="https://img.shields.io/badge/Wiki-Examples-orange" alt="Examples"> OP guide
+<a href="https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083"> <img src="https://img.shields.io/badge/Wiki-Examples-orange" alt="Examples"></a> OP guide
 
 <a href="https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083"> <img src="https://img.shields.io/badge/XDASystemless_Debloater-orange"alt="XDA - Systemless Debloater"> OP guide
