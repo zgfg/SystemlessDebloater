@@ -1,18 +1,13 @@
 # Systemless Debloater
 
-### toDo: XDA link:
-<p align="left"> 
-<a href="https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083"> <img src="https://img.shields.io/badge/XDA_Instructions-Systemless_Debloater-orange" alt="XDA - Systemless Debloater">
-</p>
-
 ### Attention
 Since the version **v1.5.1**, `SystemlessDebloater` module supports a new `SystemlessDebloater.cfg` config file. Update will create the **new config file** and transfer your old `DebloatList`. Please delete then your old `SystemlessDebloaterList.sh` input file and read and use the new config file instead
-
+<p align="left">
 ### Description
 Select and systemlessly debloat preinstalled system apps. Supporting up to **System As Root (SAR)**, **Dynamic partitions** and **Android 13**. Module must be installed through **Magisk app**, not TWRP. Please read:
 
 <a href="https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083"> <img src="https://img.shields.io/badge/XDA_Instructions-Systemless_Debloater-orange" alt="XDA - Systemless Debloater">
-- [OP instructions](https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083/) at XDA
+</p>
 - [Wiki pages](https://github.com/mModule/guide_sDebloater/wiki/ConfigScript) by [ipdev](https://github.com/ipdev99/) @ XDA with instructions for `SystemlessDebloater.cfg`
 - His [Examples](https://github.com/mModule/guide_sDebloater/wiki/CommunityList) of apps that can be debloated (**Android**, **Google**, **Oppo**, **Samsung**, **Xiaomi**, **LineageOS**)
 
