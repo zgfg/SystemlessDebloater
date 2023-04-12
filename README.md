@@ -10,9 +10,6 @@ Select and systemlessly debloat preinstalled system apps. Supporting up to **Sys
 - [Wiki pages](https://github.com/mModule/guide_sDebloater/wiki/ConfigScript) by [ipdev](https://github.com/ipdev99/) @ XDA with instructions for `SystemlessDebloater.cfg`
 - His [Examples](https://github.com/mModule/guide_sDebloater/wiki/CommunityList) of apps that can be debloated (**Android**, **Google**, **Oppo**, **Samsung**, **Xiaomi**, **LineageOS**)
 
-### Coffee
-If this module is useful for you, please support development by donating a [coffee](https://zgfg.github.io/PayPal.html)
-
 #### Source
 
 [My Repo:](https://github.com/zgfg/SystemlessDebloater)
