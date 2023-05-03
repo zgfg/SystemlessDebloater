@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-# Magisk Module: Systemless Debloater v1.5.2
+# Magisk Module: Systemless Debloater v1.5.3
 # Copyright (c) zgfg @ xda, 2020-
 # Config file improvements provided by ipdev @ xda
 # XDA thread: https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083
@@ -13,7 +13,7 @@ fi
 
 
 # Module's version
-MyVersion=v1.5.2
+MyVersion=v1.5.3
 
 # Module's folder (upon the installation and reboot)
 ModFolder=$MODPATH
@@ -33,7 +33,7 @@ echo "Installation start time: $(date +%c)" >> $LogFile
 echo '' >> $LogFile
 
 # Log system info
-Prop=$(getprop ro.product.cpu.abi)
+Prop=$(getprop ro.product.cpu.abilist)
 if [ ! -z "$Prop" ] && [ "$Prop" ]
 then
 	echo "$Prop" | tee -a $LogFile
@@ -116,6 +116,12 @@ then
 	# Clean the config file format and save to a temporary file
 	TmpConfigFile=$MODPATH/TmpSystemlessDebloater.cfg
 	sed -e '/^#/d' -e 's/#.*//g' -e 's/\"//g' -e 's/[ \t ]//g' -e '/^\s*$/d' $ConfigFile > $TmpConfigFile
+
+	# Append new line to the temporary config if not present
+	if [ -n "$(tail -c1 $TmpConfigFile)" ]
+	then
+		echo >> $TmpConfigFile
+	fi
 
 	# Read DebloatList
 	DebloatList=$'\n'
