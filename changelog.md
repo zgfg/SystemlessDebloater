@@ -1,6 +1,10 @@
 #### Coffee
 If the module is useful, you may support development by donating a [coffee](https://zgfg.github.io/PayPal.html)
 
+#### v1.5.3
+
+Fix for `SystemlessDebloater.cfg` config file - thx, ipdev @ xda-developers
+
 #### v1.5.2
 
 Adaptations for Magisk v26.
