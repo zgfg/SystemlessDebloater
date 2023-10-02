@@ -15,7 +15,6 @@ fi
 MyVersion=v1.5.4
 
 # Module's folder (upon the installation and reboot)
-#ModFolder=$MODPATH
 ModFolder=$(echo "$MODPATH" | sed "s!/modules_update/!/modules/!")
 
 # Download folder

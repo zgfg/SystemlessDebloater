@@ -23,7 +23,7 @@ getprop ro.product.cpu.abilist
 
 # List of stock apps for debloating by mounting
 cd $MODDIR
-MountListFile=mountList.sh
+MountListFile=./mountList.sh
 
 # Source the MountListFile
 MountList=""
@@ -33,7 +33,7 @@ then
 fi
 
 # Dummy apk for debloating by mounting 
-DummyApk=dummy.apk
+DummyApk=./dummy.apk
 touch $DummyApk
 
 #Debloat by mounting
