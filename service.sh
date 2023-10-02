@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-# Magisk Module: Systemless Debloater v1.5.3a
+# Magisk Module: Systemless Debloater v1.5.4
 # Copyright (c) zgfg @ xda, 2020-
 
 # Module's own path (local path)
@@ -11,6 +11,7 @@ LogFile="$MODDIR/service.log"
 exec 3>&1 4>&2 2>$LogFile 1>&2
 set -x
 date +%c
+MyVersion=v1.5.4
 
 # Log Magisk version and magisk --path
 magisk -c
@@ -21,7 +22,8 @@ getprop ro.product.cpu.abi
 getprop ro.product.cpu.abilist
 
 # List of stock apps for debloating by mounting
-MountListFile=$MODDIR/mountList.sh
+cd $MODDIR
+MountListFile=mountList.sh
 
 # Source the MountListFile
 MountList=""
@@ -31,7 +33,7 @@ then
 fi
 
 # Dummy apk for debloating by mounting 
-DummyApk=$MODDIR/dummy.apk
+DummyApk=dummy.apk
 touch $DummyApk
 
 #Debloat by mounting

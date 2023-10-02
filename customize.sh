@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-# Magisk Module: Systemless Debloater v1.5.3
+# Magisk Module: Systemless Debloater v1.5.4
 # Copyright (c) zgfg @ xda, 2020-
 # Config file improvements provided by ipdev @ xda
 # XDA thread: https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083
@@ -11,12 +11,11 @@ then
 	abort "ERROR: Install from Magisk app, not from TWRP!"
 fi
 
-
 # Module's version
-MyVersion=v1.5.3
+MyVersion=v1.5.4
 
 # Module's folder (upon the installation and reboot)
-ModFolder=$MODPATH
+#ModFolder=$MODPATH
 ModFolder=$(echo "$MODPATH" | sed "s!/modules_update/!/modules/!")
 
 # Download folder
@@ -115,7 +114,7 @@ then
 
 	# Clean the config file format and save to a temporary file
 	TmpConfigFile=$MODPATH/TmpSystemlessDebloater.cfg
-	sed -e '/^#/d' -e 's/#.*//g' -e 's/\"//g' -e 's/[ \t ]//g' -e '/^$/d' $ConfigFile > $TmpConfigFile
+ sed -e '/^#/d' -e 's/#.*//g' -e 's/\"//g' -e 's/[ \t ]//g' -e '/^$/d' $ConfigFile > $TmpConfigFile
 
 	# Append new line to the temporary config if not present
 	if [ -n "$(tail -c1 $TmpConfigFile)" ]
