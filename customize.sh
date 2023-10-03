@@ -11,6 +11,7 @@ then
 	abort "ERROR: Install from Magisk app, not from TWRP!"
 fi
 
+
 # Module's version
 MyVersion=v1.5.4
 
@@ -113,7 +114,7 @@ then
 
 	# Clean the config file format and save to a temporary file
 	TmpConfigFile=$MODPATH/TmpSystemlessDebloater.cfg
- sed -e '/^#/d' -e 's/#.*//g' -e 's/\"//g' -e 's/[ \t ]//g' -e '/^$/d' $ConfigFile > $TmpConfigFile
+	sed -e '/^#/d' -e 's/#.*//g' -e 's/\"//g' -e 's/[ \t ]//g' -e '/^$/d' $ConfigFile > $TmpConfigFile
 
 	# Append new line to the temporary config if not present
 	if [ -n "$(tail -c1 $TmpConfigFile)" ]
