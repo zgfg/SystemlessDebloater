@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-# Magisk Module: Systemless Debloater v1.5.4
+# Magisk Module: Systemless Debloater v1.5.4a
 # Copyright (c) zgfg @ xda, 2020-
 # Config file improvements provided by ipdev @ xda
 # XDA thread: https://forum.xda-developers.com/t/magisk-module-systemless-debloater.4180083
@@ -13,15 +13,15 @@ fi
 
 
 # Module's version
-MyVersion=v1.5.4
+MyVersion=v1.5.4a
 
 # Module's folder (upon the installation and reboot)
 ModFolder=$(echo "$MODPATH" | sed "s!/modules_update/!/modules/!")
 
 # Download folder
-LogFolder=/storage/emulated/0/Download
+LogFolder=/sdcard/Download
 # Alternative path to Internal memory
-# LogFolder=/sdcard/Download
+#LogFolder=/storage/emulated/0/Download
 
 # Log file
 LogFile=$LogFolder/SystemlessDebloater.log

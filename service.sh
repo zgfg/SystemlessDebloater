@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-# Magisk Module: Systemless Debloater v1.5.4
+# Magisk Module: Systemless Debloater v1.5.4a
 # Copyright (c) zgfg @ xda, 2020-
 
 # Module's own path (local path)
@@ -11,7 +11,7 @@ LogFile="$MODDIR/service.log"
 exec 3>&1 4>&2 2>$LogFile 1>&2
 set -x
 date +%c
-MyVersion=v1.5.4
+MyVersion=v1.5.4a
 
 # Log Magisk version and magisk --path
 magisk -c
